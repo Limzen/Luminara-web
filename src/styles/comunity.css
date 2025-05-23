@@ -1,0 +1,245 @@
+.community-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.community-main {
+  padding: 2rem 0 10rem;
+  min-height: calc(100vh - 200px);
+}
+
+.community-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.community-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #333;
+}
+
+.filter-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.filter-dropdown {
+  position: relative;
+}
+
+.filter-btn.all-categories {
+  background: linear-gradient(to right, #8B4513, #A0522D);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  min-width: 160px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.filter-btn.all-categories:hover {
+  background: linear-gradient(to right, #A0522D, #8B4513);
+  transform: translateY(-2px);
+}
+
+.filter-btn {
+  background: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: #444;
+  transition: all 0.3s ease;
+  min-width: 160px;
+  justify-content: space-between;
+  font-weight: 500;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.filter-btn:hover {
+  background: #fefefe;
+  border-color: #A0522D;
+  transform: translateY(-2px);
+}
+
+.filter-btn.active {
+  background: #fff8f1;
+  color: #8B4513;
+  border-color: #8B4513;
+}
+
+.dropdown-arrow {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+  color: #8B4513;
+}
+
+.filter-dropdown.open .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  z-index: 1000;
+  margin-top: 0.5rem;
+  overflow: hidden;
+  max-height: 250px;
+  overflow-y: auto;
+  animation: fadeInDropdown 0.3s ease;
+}
+
+@keyframes fadeInDropdown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-item {
+  padding: 0.8rem 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #333;
+  font-weight: 400;
+}
+
+.dropdown-item:hover {
+  background-color: #fdf5ee;
+  color: #8B4513;
+}
+
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 5rem;
+}
+
+.card-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  display: block;
+}
+
+.card-info {
+  position: absolute;
+  bottom: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #F8F1EA;
+  padding: 20px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-align: left;
+  width: calc(80% - 48px);
+  max-width: 350px;
+  z-index: 5;
+}
+
+.card-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+.card-info a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #663506;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.card-info a:hover {
+  color: #663506;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .community-container {
+    padding: 0 1rem;
+  }
+
+  .community-title {
+    font-size: 2rem;
+  }
+
+  .filter-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-btn,
+  .filter-btn.all-categories {
+    width: 100%;
+    text-align: center;
+  }
+
+  .community-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .card-image {
+    height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-section {
+    gap: 0.5rem;
+  }
+  
+  .filter-btn,
+  .filter-btn.all-categories {
+    min-width: auto;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
