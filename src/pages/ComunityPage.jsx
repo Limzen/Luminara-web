@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import FilterDropdown from "../utils/FilterDropDown";
 import CommunityCard from "../components/CommunityCard";
-import { communityData, filterOptions } from "../data/dummyCommunityData";
+import { communityData, filterOptions } from "../data/dummyData";
 import "../styles/comunity.css";
 
 const CommunityPage = () => {
