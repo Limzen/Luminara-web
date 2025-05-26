@@ -22,6 +22,7 @@
   background-color: #f5f5f5;
   z-index: 1000;
   font-family: 'Poppins', sans-serif; 
+  height: 80px;
 }
 
 .logo {
@@ -35,7 +36,16 @@
   border: none;
   border-radius: 15px;
   cursor: pointer;
-  font-family: 'Poppins', sans-serif; 
+  font-family: 'Poppins', sans-serif;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+}
+
+.download-button:hover {
+  border: 1px solid black; 
+  color: white;
 }
 
 .content {
@@ -47,7 +57,6 @@
 }
 
 .community-image {
-  background-image: url('/images/masjid-almashun.jpg');
   background-size: cover;
   background-position: center;
   border-radius: 50%;
@@ -72,6 +81,10 @@
   font-size: 16px;
   margin: 20px;
   font-family: 'Poppins', sans-serif; 
+}
+
+.chat-button:hover {
+  border: 1px solid black; /* border color on hover */
 }
 
 .description {
