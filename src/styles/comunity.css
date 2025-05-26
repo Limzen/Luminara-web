@@ -22,6 +22,24 @@
   color: #333;
 }
 
+.card-info a.join-group-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #663506; 
+  text-decoration: none; 
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.card-info a.join-group-link:hover {
+  text-decoration: underline; 
+  color: #8B4513; 
+}
+
+
 .filter-section {
   display: flex;
   justify-content: center;
@@ -229,6 +247,7 @@
   .card-image {
     height: 200px;
   }
+  
 }
 
 @media (max-width: 480px) {
