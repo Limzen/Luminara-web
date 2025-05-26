@@ -167,7 +167,7 @@ export const communityData = [
   {
     id: 1,
     image: "/public/images/masjid-almashun.jpg",
-    title: "Komunitas Pemuda Masjid Al-Ikhlas",
+    title: "Al-Mashun Mosque Community",
     type: "Islam",
     agama: "Islam",
     jenisKegiatan: "Kajian Rutin",
