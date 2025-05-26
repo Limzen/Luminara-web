@@ -16,7 +16,7 @@ const GuidePage = () => {
     <div className="guide-page">
       <Navbar />
       <div className="guide-header-image">
-        <img src="/images/masjid-header.jpg" alt="Guide Header" />
+        <img src="/images/guide-header.png" alt="Guide Header" />
       </div>
       <div className="guide-cards-container">
         {guides.map((guide, idx) => (
