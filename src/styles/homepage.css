@@ -37,10 +37,16 @@ body, html, .homepage {
   .navbar-links li {
     cursor: pointer;
     font-weight: 500;
+    color: #3d2c1e;
     transition: color 0.2s;
   }
-  .navbar-links li:hover {
-    color: #ffd9a0;
+  .navbar-links li a {
+    color: #3d2c1e;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .navbar-links li:hover a, .navbar-links li a:hover {
+    color: #a36a2e;
   }
   .navbar-user span {
     font-size: 2rem;

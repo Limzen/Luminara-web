@@ -10,6 +10,8 @@ import CommunityPage from '../pages/ComunityPage';
 import RegisterPage from '../pages/RegisterPage';
 import JoinGroupPage from '../pages/JoinGroupPage';
 import CommunityNamePage from '../pages/CommunityNamePage';
+import GuidePage from '../pages/GuidePage';
+import GuideDetailPage from '../pages/GuideDetailPage';
 
 const AppRoutes = () => (
   <Routes>
@@ -23,6 +25,9 @@ const AppRoutes = () => (
     <Route path="/register" element={<RegisterPage />} />
     <Route path="/joingroup/:id" element={<JoinGroupPage />} />
     <Route path="/communityname/:id" element={<CommunityNamePage />} />
+
+    <Route path="/guide" element={<GuidePage />} />
+    <Route path="/guide/:id" element={<GuideDetailPage />} />
 
     {/* Add more routes as needed */}
   </Routes>
