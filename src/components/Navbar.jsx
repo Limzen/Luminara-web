@@ -1,17 +1,20 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => (
   <nav className="navbar">
     <div className="navbar-logo">
-      <img src="/images/luminara_logo.png" alt="Luminara Logo" />
+      <Link to="/">
+        <img src="/images/luminara_logo.png" alt="Luminara Logo" />
+      </Link>
     </div>
     <ul className="navbar-links">
-      <li>Direktori</li>
-      <li>Itinerary</li>
-      <li>Guide</li>
-      <li>Community</li>
-      <li>Chatbot</li>
-      <li>ID</li>
+      <li><Link to="/directory">Direktori</Link></li>
+      <li><Link to="/itinerary">Itinerary</Link></li>
+      <li><Link to="/guide">Guide</Link></li>
+      <li><Link to="/comunity">Community</Link></li>
+      <li><Link to="/chatbot">Chatbot</Link></li>
+      <li><Link to="/account">ID</Link></li>
     </ul>
     <div className="navbar-user">
       {/* TODO: Replace with actual user avatar */}
