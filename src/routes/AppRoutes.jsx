@@ -19,6 +19,8 @@ import GuideDetailPage from '../pages/GuideDetailPage';
 import ItineraryPage from '../pages/ItineraryPage.jsx';
 import CreateItineraryPage from "../pages/CreateItineraryPage.jsx";
 import ItineraryDetailPage from "../pages/ItineraryDetailPage.jsx";
+import ProfilePage from '../pages/ProfilePage.jsx';
+
 
 
 const AppRoutes = () => (
@@ -39,6 +41,7 @@ const AppRoutes = () => (
     <Route path="/itinerary" element={<ItineraryPage />} />
     <Route path="/itinerary/create" element={<CreateItineraryPage />} />
     <Route path="/itinerary/:id" element={<ItineraryDetailPage />} />
+    <Route path="/profile" element={<ProfilePage />} />
     {/* Add more routes as needed */}
   </Routes>
 );
