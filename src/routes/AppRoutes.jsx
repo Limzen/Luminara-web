@@ -12,6 +12,9 @@ import JoinGroupPage from '../pages/JoinGroupPage';
 import CommunityNamePage from '../pages/CommunityNamePage';
 import GuidePage from '../pages/GuidePage';
 import GuideDetailPage from '../pages/GuideDetailPage';
+import ItineraryPage from '../pages/ItineraryPage.jsx';
+import CreateItineraryPage from "../pages/CreateItineraryPage.jsx";
+import ItineraryDetailPage from "../pages/ItineraryDetailPage.jsx";
 
 const AppRoutes = () => (
   <Routes>
@@ -29,8 +32,11 @@ const AppRoutes = () => (
     <Route path="/guide" element={<GuidePage />} />
     <Route path="/guide/:id" element={<GuideDetailPage />} />
 
+    <Route path="/itinerary" element={<ItineraryPage />} />
+    <Route path="/itinerary/create" element={<CreateItineraryPage />} />
+    <Route path="/itinerary/:id" element={<ItineraryDetailPage />} />
     {/* Add more routes as needed */}
   </Routes>
 );
 
-export default AppRoutes; 
+export default AppRoutes;
