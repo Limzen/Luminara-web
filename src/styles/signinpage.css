@@ -1,0 +1,136 @@
+.signin-container {
+    display: flex;
+    flex-direction: row; 
+    height: 100vh; 
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.signin-form {
+    flex: 1;
+    padding: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
+    font-size: 1rem;
+    color: #333;
+}
+
+input::placeholder {
+    color: #999;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #3d2c1e;
+}
+
+p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.forgot-password {
+    color: #1E4AE9;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-top: 10px; 
+    align-self: flex-end; 
+}
+
+.forgot-password:hover {
+    text-decoration: underline; 
+}
+
+.signin-button {
+    background-color: #15010A;
+    width: 100%;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.signin-button:hover {
+    background-color: #7d7579;
+}
+
+.footer-text {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #2b2a29;
+}
+
+.footer-text a {
+    color: #1E4AE9; 
+    text-decoration: none; 
+}
+
+.footer-text a:hover {
+    text-decoration: underline; 
+}
+
+.signin-image {
+    flex: none;
+    width: 400px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0 16px 16px 0;
+    margin-left: 20px;
+}
+
+.signin-image img {
+    max-width: 100%;
+    height: auto;
+}
+
+.error-message-box {
+    background-color: #ffdddd;
+    border: 1px solid #f5c2c7;
+    color: #d8000c;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) { 
+    .signin-container {
+        flex-direction: column; 
+    }
+    .signin-form {
+        margin-right: 0; 
+        margin-bottom: 20px; 
+    }
+    .signin-image {
+        flex: none; 
+        margin-left: 0; 
+        border-radius: 16px; 
+    }
+}
