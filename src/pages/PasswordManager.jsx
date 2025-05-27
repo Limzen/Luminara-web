@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import "../styles/passwordmanager.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const PasswordManager = () => {
+    const navigate = useNavigate(); // Initialize useNavigate
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -30,6 +32,9 @@ const PasswordManager = () => {
 
         // If all checks pass, proceed with password change logic
         console.log('Password changed successfully');
+
+        // Navigate to ProfilePage.jsx after successful password change
+        navigate('/profile'); // Change '/profile' to your desired route
     };
 
     const toggleCurrentPasswordVisibility = () => {

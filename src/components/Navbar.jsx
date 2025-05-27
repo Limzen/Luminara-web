@@ -12,7 +12,7 @@ const Navbar = () => (
       <li><Link to="/directory">Direktori</Link></li>
       <li><Link to="/itinerary">Itinerary</Link></li>
       <li><Link to="/guide">Guide</Link></li>
-      <li><Link to="/comunity">Community</Link></li>
+      <li><Link to="/community">Community</Link></li>
       <li><Link to="/chatbot">Chatbot</Link></li>
       <li><Link to="/account">ID</Link></li>
     </ul>
