@@ -5,6 +5,17 @@ import "../styles/chatbotpage.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faRobot, faUser } from '@fortawesome/free-solid-svg-icons';
 
+// ============= API CONFIGURATION =============
+const CHATBOT_API_URL = "";
+
+// Alternative: gunakan environment variable
+// const CHATBOT_API_URL = process.env.REACT_APP_CHATBOT_API_URL || "http://localhost:5000/ask";
+
+// 🔑 Jika butuh API key, uncomment dan isi:
+// const API_KEY = "your-api-key-here";
+// const API_KEY = process.env.REACT_APP_API_KEY;
+// ============================================
+
 const ChatbotPage = () => {
     const [messages, setMessages] = useState([
         {
@@ -35,7 +46,13 @@ const ChatbotPage = () => {
     }, [messages]);    const handleSendMessage = async (e) => {
         e.preventDefault();
         
-        if (!inputMessage.trim()) return;
+        if (!inputMessage.trim()) {
+            console.log("❌ INPUT VALIDATION ERROR: Empty message");
+            return;
+        }
+
+        console.log("✅ INPUT VALIDATION: Message validated successfully");
+        console.log("📝 User Input:", inputMessage);
 
         const newMessage = {
             id: Date.now(),
@@ -50,8 +67,12 @@ const ChatbotPage = () => {
         setIsLoading(true);
 
         try {
-            // Replace with actual chatbot API endpoint
+            console.log("🚀 PROCESS START: Calling chatbot API...");
+            
             const response = await sendMessageToAPI(currentMessage);
+            
+            console.log("✅ PROCESS SUCCESS: Response received from API");
+            console.log("📤 Bot Response:", response);
             
             const botResponse = {
                 id: Date.now() + 1,
@@ -61,96 +82,148 @@ const ChatbotPage = () => {
             };
 
             setMessages(prev => [...prev, botResponse]);
+            console.log("✅ UI UPDATE: Message added to chat successfully");
+            
         } catch (error) {
-            console.error("Error sending message:", error);
+            console.error("❌ PROCESS ERROR:", error);
+            
+            let userErrorMessage = "Maaf, saya sedang mengalami gangguan. ";
+            let technicalDetails = "";
+
+            if (error.name === "NetworkError" || error.message.includes("fetch")) {
+                userErrorMessage += "Terjadi masalah koneksi jaringan.";
+                technicalDetails = "🌐 NETWORK ERROR: Gagal terhubung ke server";
+            } else if (error.message.includes("API request failed")) {
+                userErrorMessage += "Server API tidak merespons dengan baik.";
+                technicalDetails = `🔴 API ERROR: ${error.message}`;
+            } else if (error.message.includes("Invalid response format")) {
+                userErrorMessage += "Format respons dari server tidak valid.";
+                technicalDetails = "📦 RESPONSE FORMAT ERROR: Invalid data structure";
+            } else if (error.message.includes("CORS")) {
+                userErrorMessage += "Terjadi masalah akses lintas domain.";
+                technicalDetails = "🔒 CORS ERROR: Cross-origin request blocked";
+            } else {
+                userErrorMessage += "Terjadi kesalahan yang tidak diketahui.";
+                technicalDetails = `🔧 UNKNOWN ERROR: ${error.message}`;
+            }
+
+            console.error(technicalDetails);
+            console.error("📊 Error Details:", {
+                name: error.name,
+                message: error.message,
+                stack: error.stack,
+                timestamp: new Date().toISOString()
+            });
             
             const errorResponse = {
                 id: Date.now() + 1,
-                text: "Sorry, I'm having trouble responding right now. Please try again later.",
+                text: `${userErrorMessage}\n\n🔧 Technical Info: ${technicalDetails}\n\nSilakan coba lagi nanti atau hubungi administrator jika masalah berlanjut.`,
                 sender: "bot",
                 timestamp: new Date()
             };
 
             setMessages(prev => [...prev, errorResponse]);
+            console.log("✅ ERROR HANDLING: Error message displayed to user");
+            
         } finally {
             setIsLoading(false);
+            console.log("🏁 PROCESS END: Loading state cleared");
         }
-    };    // API call function - replace with your actual API integration
+    };    
+    // Disesuaikan dengan Flask backend format + logging detail
     const sendMessageToAPI = async (message) => {
         try {
-            // Example API call structure - replace with your actual endpoint
-            // You can replace this URL with your actual chatbot API endpoint
-            const apiUrl = process.env.REACT_APP_CHATBOT_API_URL || '/api/chatbot';
+            console.log("📡 API CALL START: Preparing request...");
+            console.log("🔗 API URL:", CHATBOT_API_URL);
+            console.log("📝 Message to send:", message);
             
-            const response = await fetch(apiUrl, {
+            // Validasi URL
+            if (CHATBOT_API_URL.includes("huggingface-url")) {
+                throw new Error("API URL belum dikonfigurasi");
+            }
+
+            console.log("📤 SENDING REQUEST: Calling fetch API...");
+            
+            const response = await fetch(CHATBOT_API_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // Add authorization header if needed
-                    // 'Authorization': `Bearer ${token}`,
+                    // 🔑 Uncomment jika butuh API key:
+                    // 'Authorization': `Bearer ${API_KEY}`,
                 },
                 body: JSON.stringify({
-                    message: message,
-                    conversation_id: 'user_session_' + Date.now(), // You can implement session management
-                    user_id: 'anonymous_user', // Replace with actual user ID if available
-                    timestamp: new Date().toISOString(),
+                    question: message  
                 }),
             });
 
+            console.log("📨 RESPONSE RECEIVED:");
+            console.log("  - Status:", response.status);
+            console.log("  - Status Text:", response.statusText);
+            console.log("  - Headers:", Object.fromEntries(response.headers.entries()));
+
             if (!response.ok) {
-                throw new Error(`API request failed with status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return data.response || data.message || "I received your message but couldn't generate a proper response.";
-        } catch (error) {
-            console.error("API Error:", error);
-            // Fallback to simulation if API fails
-            return await simulateChatbotResponse(message);
-        }
-    };    // Simulate chatbot response - replace with actual API call
-    const simulateChatbotResponse = (message) => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const lowerMessage = message.toLowerCase();
-                let response = "";
-
-                // Smart responses based on Luminara features
-                if (lowerMessage.includes('direktori') || lowerMessage.includes('directory') || lowerMessage.includes('tempat ibadah')) {
-                    response = "Saya dapat membantu Anda menemukan tempat ibadah yang sesuai! Coba kunjungi halaman Direktori kami untuk melihat daftar lengkap masjid, gereja, vihara, dan tempat ibadah lainnya. Anda dapat mencari berdasarkan lokasi atau jenis tempat ibadah.";
-                } else if (lowerMessage.includes('itinerary') || lowerMessage.includes('rencana') || lowerMessage.includes('perjalanan')) {
-                    response = "Buat itinerary perjalanan spiritual Anda dengan mudah! Di halaman Itinerary, Anda dapat merencanakan kunjungan ke berbagai tempat ibadah, mengatur jadwal, dan berbagi rencana dengan teman. Fitur ini membantu Anda memaksimalkan pengalaman spiritual.";
-                } else if (lowerMessage.includes('guide') || lowerMessage.includes('panduan') || lowerMessage.includes('pemandu')) {
-                    response = "Temukan guide terpercaya untuk perjalanan spiritual Anda! Halaman Guide kami menyediakan daftar pemandu wisata yang berpengalaman dalam tur ke tempat-tempat ibadah. Mereka dapat memberikan wawasan budaya dan spiritual yang mendalam.";
-                } else if (lowerMessage.includes('community') || lowerMessage.includes('komunitas') || lowerMessage.includes('grup')) {
-                    response = "Bergabunglah dengan komunitas Luminara! Di halaman Community, Anda dapat menemukan dan bergabung dengan grup-grup yang sesuai minat spiritual Anda, berbagi pengalaman, dan berinteraksi dengan sesama pengguna.";
-                } else if (lowerMessage.includes('bantuan') || lowerMessage.includes('help') || lowerMessage.includes('cara')) {
-                    response = "Saya di sini untuk membantu! Anda dapat bertanya tentang cara menggunakan fitur Direktori, membuat Itinerary, mencari Guide, atau bergabung dengan Community. Apa yang ingin Anda ketahui lebih lanjut?";
-                } else if (lowerMessage.includes('terima kasih') || lowerMessage.includes('thanks') || lowerMessage.includes('thank you')) {
-                    response = "Sama-sama! Senang bisa membantu Anda. Jika ada pertanyaan lain tentang Luminara, jangan ragu untuk bertanya. Semoga perjalanan spiritual Anda menyenangkan! 🙏";
-                } else {
-                    const responses = [
-                        `Mengenai "${message}", saya sarankan Anda menjelajahi fitur-fitur Luminara seperti Direktori untuk menemukan tempat ibadah, atau Guide untuk panduan perjalanan spiritual.`,
-                        `Pertanyaan yang menarik tentang "${message}"! Luminara menyediakan berbagai fitur untuk mendukung perjalanan spiritual Anda. Coba cek halaman Direktori atau Community untuk informasi lebih lanjut.`,
-                        `Terima kasih sudah bertanya tentang "${message}". Apakah Anda ingin saya membantu menemukan tempat ibadah di Direktori atau merencanakan itinerary perjalanan spiritual?`,
-                        "Saya adalah asisten AI Luminara yang siap membantu Anda mengeksplorasi tempat-tempat ibadah dan merencanakan perjalanan spiritual. Ada yang bisa saya bantu hari ini?"
-                    ];
-                    response = responses[Math.floor(Math.random() * responses.length)];
+                let errorDetails = `Status: ${response.status} (${response.statusText})`;
+                
+                // Coba ambil error message dari response body jika ada
+                try {
+                    const errorBody = await response.text();
+                    if (errorBody) {
+                        errorDetails += ` - Body: ${errorBody}`;
+                    }
+                } catch (e) {
+                    console.log("Could not read error response body");
                 }
                 
-                resolve(response);
-            }, 1000 + Math.random() * 1000); // Random delay between 1-2 seconds for realism
-        });
-    };const handleKeyPress = (e) => {
+                throw new Error(`API request failed with ${errorDetails}`);
+            }
+
+            console.log("📦 PARSING RESPONSE: Converting to JSON...");
+            const data = await response.json();
+            console.log("✅ RESPONSE PARSED:", data);
+
+            if (data.status === "success" && data.answer) {
+                console.log("✅ SUCCESS PATH: Valid response with success status");
+                return data.answer;
+            } else if (data.answer) {
+                console.log("✅ FALLBACK PATH: Valid response without status field");
+                return data.answer;
+            } else if (data.error) {
+                console.log("❌ ERROR PATH: Server returned error");
+                throw new Error(`Server Error: ${data.error}`);
+            } else {
+                console.log("❌ INVALID FORMAT: Response format tidak sesuai");
+                console.log("Expected: {answer: string} or {status: 'success', answer: string}");
+                console.log("Received:", data);
+                throw new Error("Invalid response format from API");
+            }
+
+        } catch (error) {
+            console.error("❌ API CALL FAILED:");
+            console.error("  - Error Type:", error.name);
+            console.error("  - Error Message:", error.message);
+            
+            if (error.name === "TypeError" && error.message.includes("fetch")) {
+                console.error("  - Possible Cause: Network issue, CORS, or invalid URL");
+            } else if (error.name === "SyntaxError") {
+                console.error("  - Possible Cause: Response is not valid JSON");
+            }
+            
+            console.error("  - Full Error:", error);
+            throw error;
+        }
+    };
+
+    const handleKeyPress = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             handleSendMessage(e);
         }
-    };    const handleQuickAction = (actionMessage) => {
+    };
+
+    const handleQuickAction = (actionMessage) => {
         setInputMessage(actionMessage);
         setShowQuickActions(false);
         
-        // Create the message immediately
         const newMessage = {
             id: Date.now(),
             text: actionMessage,
@@ -159,12 +232,15 @@ const ChatbotPage = () => {
         };
 
         setMessages(prev => [...prev, newMessage]);
-        setIsLoading(true);
-
-        // Send to API
+        setIsLoading(true);        
         setTimeout(async () => {
             try {
+                console.log("🚀 QUICK ACTION START: Processing quick action...");
+                console.log("📝 Quick Action Message:", actionMessage);
+                
                 const response = await sendMessageToAPI(actionMessage);
+                
+                console.log("✅ QUICK ACTION SUCCESS: Response received");
                 
                 const botResponse = {
                     id: Date.now() + 1,
@@ -174,20 +250,45 @@ const ChatbotPage = () => {
                 };
 
                 setMessages(prev => [...prev, botResponse]);
+                console.log("✅ QUICK ACTION UI UPDATE: Message added successfully");
+                
             } catch (error) {
-                console.error("Error sending message:", error);
+                console.error("❌ QUICK ACTION ERROR:", error);
+                
+                let userErrorMessage = "Maaf, terjadi kesalahan saat memproses quick action. ";
+                let technicalDetails = "";
+
+                if (error.message.includes("API URL belum dikonfigurasi")) {
+                    userErrorMessage += "API belum dikonfigurasi dengan benar.";
+                    technicalDetails = "⚙️ CONFIG ERROR: API URL not configured";
+                } else if (error.name === "NetworkError" || error.message.includes("fetch")) {
+                    userErrorMessage += "Terjadi masalah koneksi jaringan.";
+                    technicalDetails = "🌐 NETWORK ERROR: Connection failed";
+                } else {
+                    userErrorMessage += "Terjadi kesalahan yang tidak diketahui.";
+                    technicalDetails = `🔧 UNKNOWN ERROR: ${error.message}`;
+                }
+
+                console.error("📊 Quick Action Error Details:", {
+                    action: actionMessage,
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                });
                 
                 const errorResponse = {
                     id: Date.now() + 1,
-                    text: "Maaf, saya sedang mengalami gangguan. Silakan coba lagi nanti.",
+                    text: `${userErrorMessage}\n\n🔧 Technical Info: ${technicalDetails}\n\nSilakan coba lagi atau gunakan input manual.`,
                     sender: "bot",
                     timestamp: new Date()
                 };
 
                 setMessages(prev => [...prev, errorResponse]);
+                console.log("✅ QUICK ACTION ERROR HANDLING: Error message displayed");
+                
             } finally {
                 setIsLoading(false);
                 setInputMessage("");
+                console.log("🏁 QUICK ACTION END: Process completed");
             }
         }, 100);
     };
@@ -266,11 +367,14 @@ const ChatbotPage = () => {
                                         </div>
                                     </div>
                                 </div>
-                            )}                            <div ref={messagesEndRef} />
+                            )}
+
+                            <div ref={messagesEndRef} />
                         </div>
 
                         <form className="message-input-form" onSubmit={handleSendMessage}>
-                            <div className="input-container">                                <input
+                            <div className="input-container">
+                                <input
                                     type="text"
                                     value={inputMessage}
                                     onChange={(e) => setInputMessage(e.target.value)}
