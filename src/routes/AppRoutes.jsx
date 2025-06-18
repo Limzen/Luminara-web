@@ -20,6 +20,7 @@ import ItineraryPage from '../pages/ItineraryPage.jsx';
 import CreateItineraryPage from "../pages/CreateItineraryPage.jsx";
 import ItineraryDetailPage from "../pages/ItineraryDetailPage.jsx";
 import ProfilePage from '../pages/ProfilePage.jsx';
+import ChatbotPage from '../pages/ChatbotPage.jsx';
 
 
 
@@ -38,10 +39,10 @@ const AppRoutes = () => (
     <Route path="/passwordmanager" element={<PasswordManager />} />
     <Route path="/guide" element={<GuidePage />} />
     <Route path="/guide/:id" element={<GuideDetailPage />} />
-    <Route path="/itinerary" element={<ItineraryPage />} />
-    <Route path="/itinerary/create" element={<CreateItineraryPage />} />
+    <Route path="/itinerary" element={<ItineraryPage />} />    <Route path="/itinerary/create" element={<CreateItineraryPage />} />
     <Route path="/itinerary/:id" element={<ItineraryDetailPage />} />
     <Route path="/profile" element={<ProfilePage />} />
+    <Route path="/chatbot" element={<ChatbotPage />} />
     {/* Add more routes as needed */}
   </Routes>
 );

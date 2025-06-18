@@ -1,0 +1,104 @@
+.floating-chatbot-button {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #AD6825 0%, #8B5E3C 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 24px;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(173, 104, 37, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.floating-chatbot-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 32px rgba(173, 104, 37, 0.4);
+    color: #ffffff;
+}
+
+.floating-chatbot-button:active {
+    transform: scale(0.95);
+}
+
+.floating-chatbot-button .tooltip {
+    position: absolute;
+    right: 70px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #333333;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+.floating-chatbot-button .tooltip::after {
+    content: '';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-left: 8px solid #333333;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+}
+
+.floating-chatbot-button:hover .tooltip {
+    opacity: 1;
+}
+
+/* Animation for entrance */
+@keyframes bounceIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.floating-chatbot-button {
+    animation: bounceIn 0.5s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .floating-chatbot-button {
+        width: 56px;
+        height: 56px;
+        bottom: 20px;
+        right: 20px;
+        font-size: 22px;
+    }
+    
+    .floating-chatbot-button .tooltip {
+        right: 66px;
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+    
+    .floating-chatbot-button .tooltip::after {
+        right: -6px;
+        border-left-width: 6px;
+        border-top-width: 6px;
+        border-bottom-width: 6px;
+    }
+}
