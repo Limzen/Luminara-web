@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { tours } from '../data/dummyData';
 import DirectoryCard from '../components/DirectoryCard';
 import CustomDropdown from '../components/CustomDropdown';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { directoryService } from '../services/directoryService';
 import '../styles/DirectoryPage.css';
 
 const worshipTypeOptions = [
@@ -28,7 +28,7 @@ const popularityOptions = [
   { label: 'All-time Popular', value: 'alltime' },
 ];
 
-// Helper to map tour name to worship type (for demo)
+// Helper to map directory name to worship type (for demo)
 const getWorshipType = (name) => {
   if (/masjid/i.test(name)) return 'masjid';
   if (/vihara/i.test(name)) return 'vihara';
@@ -42,17 +42,104 @@ const DirectoryPage = () => {
   const [distance, setDistance] = useState('all');
   const [popularity, setPopularity] = useState('all');
   const [search, setSearch] = useState('');
+  const [directories, setDirectories] = useState([]);
+  const [filteredDirectories, setFilteredDirectories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const filteredTours = tours.filter((tour) => {
-    if (worshipType !== 'all' && getWorshipType(tour.name) !== worshipType) return false;
-    // Distance and popularity filtering can be implemented when data is available
-    if (search && !(
-      tour.name.toLowerCase().includes(search.toLowerCase()) ||
-      tour.description.toLowerCase().includes(search.toLowerCase())
-    )) return false;
-    return true;
-  });
+  // Fetch directories from API
+  useEffect(() => {
+    const fetchDirectories = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await directoryService.getAllDirectories();
+        if (response.status === 200 && response.data) {
+          setDirectories(response.data);
+        } else {
+          throw new Error('Failed to fetch directories');
+        }
+      } catch (err) {
+        console.error('Error fetching directories:', err);
+        setError('Failed to load directories. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDirectories();
+  }, []);
+
+  // Filter directories based on search and filters
+  useEffect(() => {
+    let filtered = directories;
+
+    // Apply search filter
+    if (search) {
+      filtered = filtered.filter((directory) =>
+        directory.name.toLowerCase().includes(search.toLowerCase()) ||
+        directory.description.toLowerCase().includes(search.toLowerCase()) ||
+        directory.address.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    // Apply worship type filter
+    if (worshipType !== 'all') {
+      filtered = filtered.filter((directory) => 
+        getWorshipType(directory.name) === worshipType
+      );
+    }
+
+    // Apply popularity filter (sort by rating)
+    if (popularity === 'most') {
+      filtered = [...filtered].sort((a, b) => (b.overall_rating || 0) - (a.overall_rating || 0));
+    } else if (popularity === 'least') {
+      filtered = [...filtered].sort((a, b) => (a.overall_rating || 0) - (b.overall_rating || 0));
+    }
+
+    setFilteredDirectories(filtered);
+  }, [directories, search, worshipType, distance, popularity]);
+
+  // Handle search submission
+  const handleSearch = async () => {
+    if (!search.trim()) {
+      // If search is empty, fetch all directories
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await directoryService.getAllDirectories();
+        if (response.status === 200 && response.data) {
+          setDirectories(response.data);
+        }
+      } catch (err) {
+        setError('Failed to load directories. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // Perform search
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await directoryService.searchDirectories(search);
+        if (response.status === 200 && response.data) {
+          setDirectories(response.data.results || []);
+        }
+      } catch (err) {
+        setError('Search failed. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  // Handle Enter key press in search input
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
 
   return (
     <div className="directoryPage">
@@ -66,8 +153,11 @@ const DirectoryPage = () => {
             className="searchInput"
             value={search}
             onChange={e => setSearch(e.target.value)}
+            onKeyPress={handleKeyPress}
           />
-          <button className="searchButton">Search</button>
+          <button className="searchButton" onClick={handleSearch}>
+            {loading ? 'Searching...' : 'Search'}
+          </button>
         </div>
         <div className="filterBar">
           <button className="categoryButton">All Categories</button>
@@ -91,38 +181,82 @@ const DirectoryPage = () => {
           />
         </div>
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '2rem', 
+          color: '#e74c3c',
+          backgroundColor: '#fdf2f2',
+          margin: '1rem',
+          borderRadius: '8px'
+        }}>
+          {error}
+        </div>
+      )}
+
+      {/* Loading State */}
+      {loading && (
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '3rem',
+          color: '#666'
+        }}>
+          Loading directories...
+        </div>
+      )}
+
       {/* Directory Cards Grid */}
-      <div className="cardsGrid">
-        {filteredTours.map((tour) => (
-          <DirectoryCard
-            key={tour.id}
-            image={tour.image}
-            name={tour.name}
-            rating={tour.rating}
-            time={tour.time}
-            location={tour.location}
-            description={tour.description}
-            onExploreDetail={() => navigate(`/directory/${tour.id}`)}
-            cardClass="directoryCard"
-            imageClass="cardImage"
-            contentClass="cardContent"
-            titleRowClass="cardTitleRow"
-            titleClass="cardTitle"
-            ratingClass="cardRating"
-            infoRowClass="cardInfoRow"
-            infoIconClass="cardInfoIcon"
-            descClass="cardDesc"
-            exploreBtnClass="cardExploreBtn"
-          />
-        ))}
-      </div>
-      {/* Pagination */}
-      <div className="pagination">
-        <button className="pageBtn" disabled>{'<'}</button>
-        <button className="pageBtn active">1</button>
-        <button className="pageBtn">2</button>
-        <button className="pageBtn">{'>'}</button>
-      </div>
+      {!loading && !error && (
+        <>
+          <div className="cardsGrid">
+            {filteredDirectories.map((directory) => (
+              <DirectoryCard
+                key={directory.id}
+                image={directory.main_image_url || '/images/masjid-almashun.jpg'}
+                name={directory.name}
+                rating={directory.overall_rating || 0}
+                time={directory.opening_hours || 'N/A'}
+                location={directory.address}
+                description={directory.description}
+                onExploreDetail={() => navigate(`/directory/${directory.id}`)}
+                cardClass="directoryCard"
+                imageClass="cardImage"
+                contentClass="cardContent"
+                titleRowClass="cardTitleRow"
+                titleClass="cardTitle"
+                ratingClass="cardRating"
+                infoRowClass="cardInfoRow"
+                infoIconClass="cardInfoIcon"
+                descClass="cardDesc"
+                exploreBtnClass="cardExploreBtn"
+              />
+            ))}
+          </div>
+
+          {/* No results message */}
+          {filteredDirectories.length === 0 && (
+            <div style={{ 
+              textAlign: 'center', 
+              padding: '3rem',
+              color: '#666'
+            }}>
+              No directories found matching your criteria.
+            </div>
+          )}
+
+          {/* Pagination */}
+          {filteredDirectories.length > 0 && (
+            <div className="pagination">
+              <button className="pageBtn" disabled>{'<'}</button>
+              <button className="pageBtn active">1</button>
+              <button className="pageBtn">2</button>
+              <button className="pageBtn">{'>'}</button>
+            </div>
+          )}
+        </>
+      )}
       <Footer />
     </div>
   );

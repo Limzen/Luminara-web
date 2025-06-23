@@ -1,69 +1,268 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { articles } from '../data/dummyData';
+import ReactMarkdown from 'react-markdown';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import '../styles/articlepage.css';
+import { articleService } from '../services/articleService';
+import '../styles/GuideDetailPage.css';
 
 const ArticlePage = () => {
   const { id } = useParams();
-  const article = articles.find(a => String(a.id) === String(id));
+  const [article, setArticle] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Dummy content for sections (replace with real data as needed)
-  const mosqueInfo = {
-    name: 'Al-Mashun Grand Mosque (Masjid Raya Al-Mashun)',
-    location: 'Sisingamangaraja Street, Medan, North Sumatra, Indonesia',
-    built: '1906–1909',
-    style: 'Moorish, Middle Eastern, And Indian',
-    open: 'Yes (Outside Prayer Hours, Dress Modestly)',
-  };
+  // Fetch article from API
+  useEffect(() => {
+    const fetchArticle = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await articleService.getArticleById(id);
+        if (response.status === 200 && response.data) {
+          setArticle(response.data);
+        } else {
+          throw new Error('Failed to fetch article');
+        }
+      } catch (err) {
+        console.error('Error fetching article:', err);
+        setError('Failed to load article. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    if (id) {
+      fetchArticle();
+    }
+  }, [id]);
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="guide-detail-page">
+        <Navbar />
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '3rem',
+          color: '#666'
+        }}>
+          Loading article...
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="guide-detail-page">
+        <Navbar />
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '3rem',
+          color: '#e74c3c',
+          backgroundColor: '#fdf2f2',
+          margin: '1rem',
+          borderRadius: '8px'
+        }}>
+          {error}
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Article not found
   if (!article) {
     return (
-      <div className="articlepage">
+      <div className="guide-detail-page">
         <Navbar />
-        <div style={{ maxWidth: 700, margin: '0 auto', padding: '3rem 1.5rem', textAlign: 'center' }}>
-          <h1 style={{ fontWeight: 700, fontSize: '2rem', color: '#a36a2e' }}>Article Not Found</h1>
-          <p style={{ color: '#555', marginTop: '1rem' }}>Sorry, the article you are looking for does not exist.</p>
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '3rem'
+        }}>
+          <h2>Article not found</h2>
+          <p>The article you are looking for does not exist.</p>
         </div>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="articlepage">
+    <div className="guide-detail-page">
       <Navbar />
-      <h1 className="articlepage-title">{article.title}</h1>
+      <div className="guide-detail-content">
+        <h1 className="guide-detail-title">{article.name}</h1>
+        
+        <div className="guide-detail-image-wrapper">
+          <img 
+            src={article.image_url || '/images/masjid-almashun.jpg'} 
+            alt={article.name} 
+            className="guide-detail-image" 
+          />
+        </div>
+        
+        {/* Short description */}
+        {article.short_desc && (
+          <section className="guide-detail-section">
+            <h2>Overview</h2>
+            <p>{article.short_desc}</p>
+          </section>
+        )}
 
-      {/* Full-width image */}
-      <div className="articlepage-hero-image">
-        <img src={article.image} alt={article.title} className="articlepage-main-image" />
-      </div>
-      {/* Centered content */}
-      <div className="article-detail-container">
-        <h2 style={{ fontWeight: 700, fontSize: '1.5rem', margin: '1.5rem 0 0.5rem 0' }}>Al-Mashun Grand Mosque</h2>
-        <p style={{ marginBottom: '1.5rem', color: '#222', fontSize: '1.08rem', lineHeight: 1.7 }}>
-          Located In The Heart Of Medan, Al-Mashun Grand Mosque Is One Of The Most Iconic Religious And Historical Landmarks In North Sumatra. Built In 1906 And Completed In 1909, This Mosque Is Not Only A Place Of Worship But Also A Symbol Of Cultural Heritage And Architectural Brilliance That Continues To Attract Both Worshippers And Tourists From Around The World.
-        </p>
-        <h3 style={{ fontWeight: 700, fontSize: '1.2rem', margin: '1.5rem 0 0.5rem 0' }}>Architectural Beauty</h3>
-        <p style={{ marginBottom: '1.5rem', color: '#222', fontSize: '1.08rem', lineHeight: 1.7 }}>
-          The Mosque's Unique Architecture Is A Fusion Of Middle Eastern, Indian, And Spanish Styles. Designed By Dutch Architect Theodor Van Erp, The Structure Stands Out With Its Grand Black Domes, Elegant Marble Floors, And Stained Glass Windows. The Building's Symmetrical Design And Intricate Ornaments Reflect The Grandeur Of The Deli Sultanate, Under Whose Commission The Mosque Was Constructed.
-        </p>
-        <h3 style={{ fontWeight: 700, fontSize: '1.2rem', margin: '1.5rem 0 0.5rem 0' }}>Tourist Attraction</h3>
-        <p style={{ marginBottom: '1.5rem', color: '#222', fontSize: '1.08rem', lineHeight: 1.7 }}>
-          In Addition To Its Religious Functions, The Mosque Serves As A Popular Tourist Destination. Visitors Are Welcome To Explore The Mosque's Architecture, Learn About Its History, And Experience The Spiritual Atmosphere. Proper Dress And Respectful Behavior Are Required When Entering The Mosque, And Guided Tours Are Sometimes Available To Provide Deeper Insight Into Its Background.
-        </p>
-        <h3 style={{ fontWeight: 700, fontSize: '1.2rem', margin: '1.5rem 0 0.5rem 0' }}>Quick Info:</h3>
-        <ul style={{ marginBottom: '1.5rem', color: '#222', fontSize: '1.08rem', lineHeight: 1.7, paddingLeft: 20 }}>
-          <li><b>Name:</b> {mosqueInfo.name}</li>
-          <li><b>Location:</b> {mosqueInfo.location}</li>
-          <li><b>Built:</b> {mosqueInfo.built}</li>
-          <li><b>Architectural Style:</b> {mosqueInfo.style}</li>
-          <li><b>Open To Tourists:</b> {mosqueInfo.open}</li>
-        </ul>
-        <p style={{ color: '#222', fontSize: '1.08rem', lineHeight: 1.7 }}>
-          Whether You Are Seeking A Deeper Spiritual Connection Or Simply Wish To Admire One Of Medan's Most Beautiful Landmarks, Al-Mashun Grand Mosque Is A Must-Visit Destination.
-        </p>
+        {/* Full description with markdown support */}
+        {article.full_desc && (
+          <section className="guide-detail-section">
+            <h2>Detailed Information</h2>
+            <div>
+              <ReactMarkdown
+                components={{
+                  h1: ({ children }) => (
+                    <h1 style={{ fontWeight: 700, fontSize: '1.8rem', margin: '1.5rem 0 0.5rem 0', color: '#a36a2e' }}>
+                      {children}
+                    </h1>
+                  ),
+                  h2: ({ children }) => (
+                    <h2 style={{ fontWeight: 700, fontSize: '1.5rem', margin: '1.5rem 0 0.5rem 0', color: '#a36a2e' }}>
+                      {children}
+                    </h2>
+                  ),
+                  h3: ({ children }) => (
+                    <h3 style={{ fontWeight: 700, fontSize: '1.2rem', margin: '1.5rem 0 0.5rem 0', color: '#a36a2e' }}>
+                      {children}
+                    </h3>
+                  ),
+                  p: ({ children }) => (
+                    <p style={{ marginBottom: '1rem', color: '#222', fontSize: '1.08rem', lineHeight: 1.7 }}>
+                      {children}
+                    </p>
+                  ),
+                  ul: ({ children }) => (
+                    <ul style={{ marginBottom: '1.5rem', color: '#222', fontSize: '1.08rem', lineHeight: 1.7, paddingLeft: 20 }}>
+                      {children}
+                    </ul>
+                  ),
+                  ol: ({ children }) => (
+                    <ol style={{ marginBottom: '1.5rem', color: '#222', fontSize: '1.08rem', lineHeight: 1.7, paddingLeft: 20 }}>
+                      {children}
+                    </ol>
+                  ),
+                  li: ({ children }) => (
+                    <li style={{ marginBottom: '0.5rem' }}>
+                      {children}
+                    </li>
+                  ),
+                  strong: ({ children }) => (
+                    <strong style={{ fontWeight: 700, color: '#a36a2e' }}>
+                      {children}
+                    </strong>
+                  ),
+                  em: ({ children }) => (
+                    <em style={{ fontStyle: 'italic', color: '#666' }}>
+                      {children}
+                    </em>
+                  ),
+                  blockquote: ({ children }) => (
+                    <blockquote style={{ 
+                      borderLeft: '4px solid #a36a2e', 
+                      paddingLeft: '1rem', 
+                      margin: '1.5rem 0', 
+                      fontStyle: 'italic',
+                      color: '#666',
+                      backgroundColor: '#f9f6f2',
+                      padding: '1rem',
+                      borderRadius: '4px'
+                    }}>
+                      {children}
+                    </blockquote>
+                  ),
+                  code: ({ children }) => (
+                    <code style={{ 
+                      backgroundColor: '#f4f4f4', 
+                      padding: '0.2rem 0.4rem', 
+                      borderRadius: '3px',
+                      fontFamily: 'monospace',
+                      fontSize: '0.9em'
+                    }}>
+                      {children}
+                    </code>
+                  ),
+                  pre: ({ children }) => (
+                    <pre style={{ 
+                      backgroundColor: '#f4f4f4', 
+                      padding: '1rem', 
+                      borderRadius: '8px',
+                      overflow: 'auto',
+                      margin: '1rem 0'
+                    }}>
+                      {children}
+                    </pre>
+                  ),
+                  a: ({ href, children }) => (
+                    <a 
+                      href={href} 
+                      style={{ 
+                        color: '#a36a2e', 
+                        textDecoration: 'underline',
+                        fontWeight: 500
+                      }}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {children}
+                    </a>
+                  ),
+                }}
+              >
+                {article.full_desc}
+              </ReactMarkdown>
+            </div>
+          </section>
+        )}
+
+        {/* Default content if no full_desc is provided */}
+        {!article.full_desc && (
+          <>
+            <section className="guide-detail-section">
+              <h2>Historical Background</h2>
+              <p>
+                This religious site holds significant cultural and spiritual importance in the region. 
+                Visitors can experience the rich heritage and architectural beauty that reflects the 
+                diverse religious traditions of the area.
+              </p>
+            </section>
+            <section className="guide-detail-section">
+              <h2>Architectural Beauty</h2>
+              <p>
+                The site showcases unique architectural elements that blend various cultural influences, 
+                creating a stunning visual experience for visitors. The design reflects the historical 
+                and cultural significance of the location.
+              </p>
+            </section>
+            <section className="guide-detail-section">
+              <h2>Tourist Attraction</h2>
+              <p>
+                In addition to its religious functions, this site serves as a popular tourist destination. 
+                Visitors are welcome to explore the architecture, learn about its history, and experience 
+                the spiritual atmosphere. Proper dress and respectful behavior are required when visiting.
+              </p>
+            </section>
+          </>
+        )}
+
+        {/* Quick Info section */}
+        <section className="guide-detail-section">
+          <h2>Quick Information</h2>
+          <ul className="guide-detail-list">
+            <li><b>Name:</b> {article.name}</li>
+            <li><b>Type:</b> Religious Site</li>
+            <li><b>Description:</b> {article.short_desc || 'A significant religious and cultural landmark'}</li>
+            {article.full_desc && <li><b>Full Description:</b> Available above</li>}
+          </ul>
+        </section>
       </div>
       <Footer />
     </div>

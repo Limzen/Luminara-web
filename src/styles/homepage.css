@@ -106,6 +106,11 @@ body, html, .homepage {
     justify-content: space-between;
     margin: 0 2rem 1rem 2rem;
   }
+  .section-header h2 {
+    color: #f7f3ef;
+    font-size: 2rem;
+    font-weight: bold;
+  }
   .tour-cards-wrapper {
     position: relative;
     width: 100%;
@@ -198,21 +203,17 @@ body, html, .homepage {
     font-size: 1rem;
     font-weight: bold;
     white-space: pre-line;
-    text-align: justify;
   }
   .about-logo {
     flex: 1;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
   }
   .about-logo img {
-    width: 50vw;
-    min-width: 180px;
-    max-width: 500px;
+    max-width: 100%;
     height: auto;
-    display: block;
-    margin: 0 auto;
+    max-height: 400px;
   }
   
   /* Articles Section */
@@ -226,6 +227,8 @@ body, html, .homepage {
     margin-left: 2rem;
     margin-bottom: 1rem;
     font-size: 2rem;
+    color: #f7f3ef;
+    font-weight: bold;
   }
   .article-cards-wrapper {
     position: relative;
@@ -244,28 +247,55 @@ body, html, .homepage {
     border-radius: 16px;
     min-width: 340px;
     max-width: 360px;
-    min-height: 340px;
+    height: 400px; /* Fixed height for consistent sizing */
     flex: 0 0 auto;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
+    box-shadow: 0 2px 8px rgba(163, 106, 46, 0.08);
   }
   .article-card-image {
     width: 100%;
     height: 180px;
     object-fit: cover;
     border-radius: 12px;
+    flex-shrink: 0; /* Prevent image from shrinking */
+  }
+  .article-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 1rem;
   }
   .article-card-content h3 {
-    margin: 0.5rem 0 0.2rem 0;
+    margin: 0 0 0.5rem 0;
     font-size: 1.1rem;
     color: #a36a2e;
+    font-weight: bold;
+    line-height: 1.3;
+    /* Limit to 2 lines with ellipsis */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 2.6em; /* Ensure consistent height for 2 lines */
   }
   .article-card-content p {
     font-size: 0.95rem;
     color: #6d4c1b;
-    margin: 0.2rem 0;
+    margin: 0 0 1rem 0;
+    line-height: 1.4;
+    flex: 1;
+    /* Limit to 3 lines with ellipsis */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 4.2em; /* Ensure consistent height for 3 lines */
   }
   .article-card-content button {
     background: #a36a2e;
@@ -275,8 +305,9 @@ body, html, .homepage {
     padding: 0.5rem 1.2rem;
     cursor: pointer;
     font-weight: 500;
-    margin-top: 0.5rem;
+    margin-top: auto; /* Push button to bottom */
     transition: background 0.2s;
+    flex-shrink: 0; /* Prevent button from shrinking */
   }
   .article-card-content button:hover {
     background: #7a4c1a;

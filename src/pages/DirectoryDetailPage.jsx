@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { tours } from '../data/dummyData';
+import { directoryService } from '../services/directoryService';
 
-// Dummy reviews data
+// Dummy reviews data (can be replaced with API later)
 const reviews = [
   {
     id: 1,
@@ -48,15 +48,6 @@ const reviews = [
   },
 ];
 
-const ratingSummary = {
-  average: 4.3,
-  count: 854,
-  guide: 4.8,
-  transportation: 3.0,
-  value: 4.5,
-  safety: 4.0,
-};
-
 const sortOptions = [
   { label: 'Shortest by newest', value: 'newest' },
   { label: 'Highest rating', value: 'highest' },
@@ -64,35 +55,133 @@ const sortOptions = [
 
 const DirectoryDetailPage = () => {
   const { id } = useParams();
-  const tour = tours.find(t => String(t.id) === String(id));
+  const [directory, setDirectory] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewForm, setReviewForm] = useState({ rating: 0, text: '', firstName: '', lastName: '' });
   const [sort, setSort] = useState('newest');
 
-  if (!tour) return <div><Navbar /><div style={{padding: '2rem'}}>Not found</div><Footer /></div>;
+  // Fetch directory from API
+  useEffect(() => {
+    const fetchDirectory = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await directoryService.getDirectoryById(id);
+        if (response.status === 200 && response.data) {
+          setDirectory(response.data);
+        } else {
+          throw new Error('Failed to fetch directory');
+        }
+      } catch (err) {
+        console.error('Error fetching directory:', err);
+        setError('Failed to load directory. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchDirectory();
+    }
+  }, [id]);
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="directoryPage">
+        <Navbar />
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '3rem',
+          color: '#666'
+        }}>
+          Loading directory details...
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="directoryPage">
+        <Navbar />
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '3rem',
+          color: '#e74c3c',
+          backgroundColor: '#fdf2f2',
+          margin: '1rem',
+          borderRadius: '8px'
+        }}>
+          {error}
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Directory not found
+  if (!directory) {
+    return (
+      <div className="directoryPage">
+        <Navbar />
+        <div style={{padding: '2rem', textAlign: 'center'}}>
+          <h2>Directory not found</h2>
+          <p>The directory you are looking for does not exist.</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Calculate rating summary from directory data
+  const ratingSummary = {
+    average: directory.overall_rating || 0,
+    count: directory.rating?.total_reviews || 0,
+    guide: directory.rating?.guide_rating || 0,
+    transportation: directory.rating?.transportation_rating || 0,
+    value: directory.rating?.value_for_money_rating || 0,
+    safety: directory.rating?.safety_rating || 0,
+  };
 
   return (
     <div className="directoryPage">
       <Navbar />
       <div className="detail-container" style={{maxWidth: 1200, margin: '0 auto', padding: '2rem 1rem 0 1rem'}}>
         <div className="detail-main" style={{display: 'flex', flexWrap: 'wrap', gap: '2rem', marginTop: '1.5rem'}}>
-          <img src={tour.image} alt={tour.name} className="detail-image" style={{width: 400, height: 250, objectFit: 'cover', borderRadius: '1rem'}} />
+          <img 
+            src={directory.main_image_url || '/images/masjid-almashun.jpg'} 
+            alt={directory.name} 
+            className="detail-image" 
+            style={{width: 400, height: 250, objectFit: 'cover', borderRadius: '1rem'}} 
+          />
           <div className="detail-info" style={{flex: 1, minWidth: 300}}>
-            <h1 className="detail-title" style={{fontSize: '2rem', fontWeight: 600, marginBottom: 8, color: '#222'}}>{tour.name}</h1>
+            <h1 className="detail-title" style={{fontSize: '2rem', fontWeight: 600, marginBottom: 8, color: '#222'}}>
+              {directory.name}
+            </h1>
             <div className="detail-meta" style={{display: 'flex', gap: 24, color: '#888', fontSize: 15, marginBottom: 8}}>
-              <span><i className="fa fa-map-marker" />Jl. Sakura III, Taman Sakura Indah, Medan Tuntungan</span>
-              <span><i className="fa fa-clock-o" />{tour.time}</span>
+              <span><i className="fa fa-map-marker" />{directory.address}</span>
+              <span><i className="fa fa-clock-o" />{directory.opening_hours || 'N/A'}</span>
             </div>
             <div className="detail-desc" style={{marginBottom: 16, color: '#444'}}>
-              {tour.description} <br />
+              {directory.description} <br />
               <span style={{color: '#888', fontSize: 14}}>
-                Graha Maria Annai Velangkanni is a Catholic church and pilgrimage site in Medan, dedicated to Our Lady of Good Health, originally venerated in Velankanni, India. Built in Indo-Mughal architectural style, it stands out with its colorful, multi-tiered structure and intricate details. Open to all visitors, the site blends cultural and spiritual elements, making it a unique destination for both worship and admiration.
+                This religious site offers visitors a unique blend of spiritual significance and cultural heritage. 
+                The architecture and atmosphere provide an enriching experience for all who visit.
               </span>
             </div>
             <div className="detail-ratings" style={{display: 'flex', gap: 32, alignItems: 'flex-start'}}>
               <div className="detail-rating-summary" style={{minWidth: 180}}>
-                <div style={{fontSize: 32, fontWeight: 600, color: '#A67C52'}}>{ratingSummary.average.toLocaleString('en-US', {minimumFractionDigits: 1})}</div>
-                <span style={{color: '#888', fontWeight: 500, fontSize: 18}}>{ratingSummary.count} Reviews</span>
+                <div style={{fontSize: 32, fontWeight: 600, color: '#A67C52'}}>
+                  {ratingSummary.average.toLocaleString('en-US', {minimumFractionDigits: 1})}
+                </div>
+                <span style={{color: '#888', fontWeight: 500, fontSize: 18}}>
+                  {ratingSummary.count} Reviews
+                </span>
                 <div style={{margin: '8px 0'}}>
                   {[1,2,3,4,5].map(i => (
                     <span key={i} style={{color: i <= Math.round(ratingSummary.average) ? '#E2A300' : '#e5dbce', fontSize: 28}}>&#9733;</span>
@@ -100,7 +189,12 @@ const DirectoryDetailPage = () => {
                 </div>
               </div>
               <div className="detail-rating-bars" style={{flex: 1, minWidth: 180}}>
-                {[['Guide', ratingSummary.guide], ['Transportation', ratingSummary.transportation], ['Value for money', ratingSummary.value], ['Safety', ratingSummary.safety]].map(([label, value]) => (
+                {[
+                  ['Guide', ratingSummary.guide], 
+                  ['Transportation', ratingSummary.transportation], 
+                  ['Value for money', ratingSummary.value], 
+                  ['Safety', ratingSummary.safety]
+                ].map(([label, value]) => (
                   <div key={label} style={{marginBottom: 8}}>
                     <div style={{display: 'flex', justifyContent: 'space-between', fontSize: 15, color: '#888'}}>
                       <span>{label}</span>
@@ -113,7 +207,13 @@ const DirectoryDetailPage = () => {
                 ))}
               </div>
             </div>
-            <button className="write-review-btn" style={{marginTop: 24, background: '#A67C52', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 32px', fontWeight: 600, fontSize: 16, cursor: 'pointer'}} onClick={() => setShowReviewModal(true)}>Write a review</button>
+            <button 
+              className="write-review-btn" 
+              style={{marginTop: 24, background: '#A67C52', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 32px', fontWeight: 600, fontSize: 16, cursor: 'pointer'}} 
+              onClick={() => setShowReviewModal(true)}
+            >
+              Write a review
+            </button>
           </div>
         </div>
         {/* Reviews Section */}
@@ -169,7 +269,7 @@ const DirectoryDetailPage = () => {
             <button onClick={() => setShowReviewModal(false)} style={{position: 'absolute', top: 18, right: 18, background: 'none', border: 'none', fontSize: 22, color: '#888', cursor: 'pointer'}}>&times;</button>
             <div style={{textAlign: 'center', marginBottom: 18}}>
               <div style={{fontWeight: 600, fontSize: 22, color: '#222', marginBottom: 2}}>Leave Your Impression for</div>
-              <div style={{fontWeight: 700, fontSize: 22, color: '#A67C52', marginBottom: 8}}>{tour.name}</div>
+              <div style={{fontWeight: 700, fontSize: 22, color: '#A67C52', marginBottom: 8}}>{directory.name}</div>
               <div style={{color: '#444', fontSize: 16, marginBottom: 18}}>Tell us what you think.</div>
               <div style={{marginBottom: 18}}>
                 {[1,2,3,4,5].map(i => (
@@ -210,16 +310,7 @@ const DirectoryDetailPage = () => {
                   required
                 />
               </div>
-              <button
-                type="submit"
-                className="review-modal-submit"
-                style={{width: '100%', background: '#A67C52', color: '#fff', border: 'none', borderRadius: 24, padding: '0.9rem 0', fontWeight: 600, fontSize: 18, marginBottom: 18, cursor: 'pointer'}}
-              >
-                Submit Review
-              </button>
-              <div style={{color: '#888', fontSize: 14, textAlign: 'left', marginTop: 8}}>
-                All reviews on Cool Co. Reviews are verified within 48 hours before posting to ensure authenticity and accuracy.
-              </div>
+              <button type="submit" style={{width: '100%', background: '#A67C52', color: '#fff', border: 'none', borderRadius: 8, padding: '12px', fontWeight: 600, fontSize: 16, cursor: 'pointer'}}>Submit Review</button>
             </form>
           </div>
         </div>
