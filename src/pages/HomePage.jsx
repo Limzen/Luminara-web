@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import TourCard from '../components/TourCard';
 import ArticleCard from '../components/ArticleCard';
-import { tours, articles, about } from '../data/dummyData';
+import { about } from '../data/dummyData';
+import { articleService } from '../services/articleService';
+import { directoryService } from '../services/directoryService';
 import '../styles/homepage.css'
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -91,8 +93,62 @@ const Carousel = ({ items, renderItem, carousel }) => {
 };
 
 const HomePage = () => {
-  // Carousel logic for tours
-  const tourCarousel = useCarousel(tours.length);
+  const [articles, setArticles] = useState([]);
+  const [articlesLoading, setArticlesLoading] = useState(true);
+  const [articlesError, setArticlesError] = useState(null);
+  
+  const [directories, setDirectories] = useState([]);
+  const [directoriesLoading, setDirectoriesLoading] = useState(true);
+  const [directoriesError, setDirectoriesError] = useState(null);
+
+  // Fetch articles from API
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setArticlesLoading(true);
+        setArticlesError(null);
+        const response = await articleService.getAllArticles();
+        if (response.status === 200 && response.data) {
+          setArticles(response.data);
+        } else {
+          throw new Error('Failed to fetch articles');
+        }
+      } catch (err) {
+        console.error('Error fetching articles:', err);
+        setArticlesError('Failed to load articles. Please try again later.');
+      } finally {
+        setArticlesLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
+  // Fetch directories from API
+  useEffect(() => {
+    const fetchDirectories = async () => {
+      try {
+        setDirectoriesLoading(true);
+        setDirectoriesError(null);
+        const response = await directoryService.getAllDirectories();
+        if (response.status === 200 && response.data) {
+          setDirectories(response.data);
+        } else {
+          throw new Error('Failed to fetch directories');
+        }
+      } catch (err) {
+        console.error('Error fetching directories:', err);
+        setDirectoriesError('Failed to load directories. Please try again later.');
+      } finally {
+        setDirectoriesLoading(false);
+      }
+    };
+
+    fetchDirectories();
+  }, []);
+
+  // Carousel logic for directories (tours)
+  const directoryCarousel = useCarousel(directories.length);
   // Carousel logic for articles
   const articleCarousel = useCarousel(articles.length);
 
@@ -113,13 +169,55 @@ const HomePage = () => {
       <section className="popular-tours-section">
         <div className="section-header">
           <h2>Find Popular Tours</h2>
-          <a href="#" className="see-all-link">See All..</a>
+          <a href="/directory" className="see-all-link">See All..</a>
         </div>
-        <Carousel
-          items={tours}
-          renderItem={(tour) => <TourCard key={tour.id} tour={tour} />}
-          carousel={tourCarousel}
-        />
+        {directoriesLoading ? (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '3rem',
+            color: '#666'
+          }}>
+            Loading popular tours...
+          </div>
+        ) : directoriesError ? (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '2rem', 
+            color: '#e74c3c',
+            backgroundColor: '#fdf2f2',
+            margin: '1rem',
+            borderRadius: '8px'
+          }}>
+            {directoriesError}
+          </div>
+        ) : directories.length > 0 ? (
+          <Carousel
+            items={directories}
+            renderItem={(directory) => (
+              <TourCard 
+                key={directory.id} 
+                tour={{
+                  id: directory.id,
+                  name: directory.name,
+                  rating: directory.overall_rating || 0,
+                  time: directory.opening_hours || 'N/A',
+                  location: directory.address,
+                  description: directory.description,
+                  image: directory.main_image_url || '/images/masjid-almashun.jpg'
+                }} 
+              />
+            )}
+            carousel={directoryCarousel}
+          />
+        ) : (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '3rem',
+            color: '#666'
+          }}>
+            No popular tours available at the moment.
+          </div>
+        )}
       </section>
 
       {/* About Us Section */}
@@ -136,11 +234,50 @@ const HomePage = () => {
       {/* Articles Section */}
       <section className="articles-section">
         <h2>Artikel</h2>
-        <Carousel
-          items={articles}
-          renderItem={(article) => <ArticleCard key={article.id} article={article} />}
-          carousel={articleCarousel}
-        />
+        {articlesLoading ? (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '3rem',
+            color: '#666'
+          }}>
+            Loading articles...
+          </div>
+        ) : articlesError ? (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '2rem', 
+            color: '#e74c3c',
+            backgroundColor: '#fdf2f2',
+            margin: '1rem',
+            borderRadius: '8px'
+          }}>
+            {articlesError}
+          </div>
+        ) : articles.length > 0 ? (
+          <Carousel
+            items={articles}
+            renderItem={(article) => (
+              <ArticleCard 
+                key={article.id} 
+                article={{
+                  id: article.id,
+                  title: article.name,
+                  description: article.short_desc || 'No description available',
+                  image: article.image_url || '/images/masjid-almashun.jpg'
+                }} 
+              />
+            )}
+            carousel={articleCarousel}
+          />
+        ) : (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '3rem',
+            color: '#666'
+          }}>
+            No articles available at the moment.
+          </div>
+        )}
       </section>
 
       {/* Tour Map Section */}
