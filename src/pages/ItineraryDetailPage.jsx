@@ -1,52 +1,117 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import Button from '../components/Button.jsx';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar.jsx';
+import Footer from '../components/Footer.jsx';
+import Button from '../components/Button.jsx';
 import '../styles/page/ItineraryDetailPage.css';
+import { itineraryService } from '../services/itineraryService';
 
 const ItineraryDetailPage = () => {
     const { id } = useParams();
-    // Fetch itinerary data using the id (e.g., from localStorage or an API)
-    const itinerary = {
-        title: "Medan Religious Trip – 3 Days",
-        imageSrc: "/images/masjid-almashun.jpg",
-        location: "Graha Bunda Maria Annai Velangkanni",
-        address: "Jl. Sisingamangaraja No.81, Medan Kota District, Medan City, North Sumatra 20119",
-        date: "12 May 2025",
-        time: "15:45 WIB",
-        budget: "Rp 350,000",
-    };
+    const navigate = useNavigate();
+
+    const [itinerary, setItinerary] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchItineraryDetail = async () => {
+            if (!id) return;
+
+            try {
+                setLoading(true);
+                const response = await itineraryService.getItineraryById(id);
+
+                if (response && response.data) {
+                    const fullDetails = {
+                        ...response.data,
+                        address: "Jl. Sisingamangaraja No.81, Medan Kota District, Medan City",
+                        time: "15:45 WIB",
+                        budget: "Rp 350,000",
+                    };
+                    setItinerary(fullDetails);
+                } else {
+                    throw new Error("Itinerary not found.");
+                }
+            } catch (err) {
+                const errorMessage = err.response?.data?.message || err.message || 'Failed to fetch itinerary details.';
+                setError(errorMessage);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchItineraryDetail();
+    }, [id]);
+
+    if (loading) {
+        return <div className="loading-container">Loading Details...</div>;
+    }
+
+    if (error) {
+        return <div className="error-container">Error: {error}</div>;
+    }
+
+    if (!itinerary) {
+        return (
+            <div className="detail-page-container">
+                <Navbar />
+                <main className="content-wrapper"><h2>Itinerary not found.</h2></main>
+                <Footer />
+            </div>
+        );
+    }
 
     return (
-        <div className="itinerary-detail-page">
+        <div className="detail-page-container">
             <Navbar />
-            <div className="content-container">
-                <Button text="← Previous Page" onClick={() => window.history.back()} className="back-button" />
-                <div className="banner-image">
-                    <img src={itinerary.imageSrc} alt="Banner" />
-                    <h1>{itinerary.title}</h1>
-                </div>
-                <div className="itinerary-details">
-                    <h2>{itinerary.location}</h2>
-                    <p className="address">{itinerary.address}</p>
-                    <div className="detail-row">
-                        <span><strong>Date:</strong> {itinerary.date}</span>
-                        <span><strong>Time:</strong> {itinerary.time}</span>
-                    </div>
-                </div>
-                <div className="section travel-budgeting">
-                    <h3 className="section-header">Travel Budgeting</h3>
-                    <div className="budget-content">
-                        <p>{itinerary.budget}</p>
-                    </div>
-                </div>
-                <div className="section notes">
-                    <h3 className="section-header">Notes</h3>
-                    <div className="notes-content">
-                        <textarea placeholder="Add your notes here..."></textarea>
-                    </div>
+            <div className="detail-header">
+                <div className="header-content">
+                    <Button text="← Back to Itineraries" onClick={() => navigate(-1)} className="back-button" />
+                    <h1>{itinerary.name}</h1>
+                    <p className="header-subtitle">{itinerary.destinations}</p>
                 </div>
             </div>
+            <main className="detail-main-content">
+                <div className="detail-layout">
+                    {/* Kolom Kiri - Konten Utama */}
+                    <div className="detail-primary-column">
+                        <div className="banner-image">
+                            <img src={itinerary.image_url || "/images/masjid-almashun.jpg"} alt={itinerary.name} />
+                        </div>
+                        <section className="content-section">
+                            <h3>Notes</h3>
+                            <div className="notes-content">
+                                <p>{itinerary.description || "No special notes provided for this itinerary."}</p>
+                            </div>
+                        </section>
+                    </div>
+
+                    {/* Kolom Kanan - Sidebar Info */}
+                    <aside className="detail-secondary-column">
+                        <div className="info-card">
+                            <h4>Trip Details</h4>
+                            <div className="info-item">
+                                <span className="info-label">📍 Address</span>
+                                <span className="info-value">{itinerary.address}</span>
+                            </div>
+                            <div className="info-item">
+                                <span className="info-label">📅 Date</span>
+                                <span className="info-value">{new Date(itinerary.start_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                            </div>
+                            <div className="info-item">
+                                <span className="info-label">🕒 Time</span>
+                                <span className="info-value">{itinerary.time}</span>
+                            </div>
+                            <div className="info-item budget">
+                                <span className="info-label">💰 Budget</span>
+                                <span className="info-value budget-value">{itinerary.budget}</span>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </main>
+            <Footer />
         </div>
     );
 };

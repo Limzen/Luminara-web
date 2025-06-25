@@ -39,7 +39,8 @@ const AppRoutes = () => (
     <Route path="/passwordmanager" element={<PasswordManager />} />
     <Route path="/guide" element={<GuidePage />} />
     <Route path="/guide/:id" element={<GuideDetailPage />} />
-    <Route path="/itinerary" element={<ItineraryPage />} />    <Route path="/itinerary/create" element={<CreateItineraryPage />} />
+    <Route path="/itinerary" element={<ItineraryPage />} />
+    <Route path="/itinerary/create" element={<CreateItineraryPage />} />
     <Route path="/itinerary/:id" element={<ItineraryDetailPage />} />
     <Route path="/profile" element={<ProfilePage />} />
     <Route path="/chatbot" element={<ChatbotPage />} />

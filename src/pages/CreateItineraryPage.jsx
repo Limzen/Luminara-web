@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import Button from '../components/Button.jsx';
 import Navbar from '../components/Navbar.jsx';
 import InputField from '../components/InputField.jsx';
 import DateTimeField from '../components/DateTimeField.jsx';
 import TextareaField from '../components/TextareaField.jsx';
 import '../styles/page/CreateItineraryPage.css';
-import {useNavigate} from "react-router-dom";
+import { itineraryService } from '../services/itineraryService';
 
 const CreateItineraryPage = () => {
     const navigate = useNavigate();
+
     const [itineraryName, setItineraryName] = useState('');
     const [destinations, setDestinations] = useState('');
     const [startDate, setStartDate] = useState('');
@@ -16,21 +18,38 @@ const CreateItineraryPage = () => {
     const [budget, setBudget] = useState('');
     const [notes, setNotes] = useState('');
 
-    const handleSubmit = () => {
-        const newItinerary = {
-            itineraryName,
-            destinations,
-            createdOn: new Date().toISOString().split('T')[0],
-            startDate,
-            startTime,
-            budget,
-            notes,
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const handleSubmit = async () => {
+        if (!itineraryName || !destinations) {
+            alert('Itinerary Name and Destinations are required.');
+            return;
+        }
+
+        setIsLoading(true);
+        setError(null);
+
+        const itineraryData = {
+            user_id: 2,
+            name: itineraryName,
+            destinations: destinations,
+            start_date: startDate || null,
+            description: notes,
+            image_url: "https://placehold.co/600x400/d1bfa7/4A2E2A?text=New+Trip"
         };
 
-        const existingItineraries = JSON.parse(localStorage.getItem('itineraries')) || [];
-        localStorage.setItem('itineraries', JSON.stringify([...existingItineraries, newItinerary]));
-
-        navigate('/itinerary');
+        try {
+            const result = await itineraryService.createItinerary(itineraryData);
+            console.log('Itinerary created:', result);
+            navigate('/itinerary');
+        } catch (err) {
+            const errorMessage = err.response?.data?.message || 'Failed to create itinerary. Please try again.';
+            setError(errorMessage);
+            alert(`Error: ${errorMessage}`);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -38,6 +57,8 @@ const CreateItineraryPage = () => {
             <Navbar />
             <div className="content-container">
                 <h1>Plan Your Spiritual Journey</h1>
+                {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
+
                 <InputField
                     label="Itinerary Name"
                     placeholder="Example: Medan Religious Trip - 3 Days"
@@ -70,7 +91,12 @@ const CreateItineraryPage = () => {
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                 />
-                <Button text="Create Itinerary" onClick={handleSubmit} />
+
+                <Button
+                    text={isLoading ? 'Creating...' : 'Create Itinerary'}
+                    onClick={handleSubmit}
+                    disabled={isLoading}
+                />
             </div>
         </div>
     );
