@@ -5,15 +5,21 @@ import "../styles/chatbotpage.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faRobot, faUser } from '@fortawesome/free-solid-svg-icons';
 
+
 // ============= API CONFIGURATION =============
-const CHATBOT_API_URL = "";
+// 🔒 SECURE: API URL sekarang diambil dari environment variable
+const CHATBOT_API_URL = import.meta.env.VITE_CHATBOT_API_URL || "https://default-fallback-url.com/chat";
 
-// Alternative: gunakan environment variable
-// const CHATBOT_API_URL = process.env.REACT_APP_CHATBOT_API_URL || "http://localhost:5000/ask";
+// 🔑 API Key (jika diperlukan)
+const API_KEY = import.meta.env.VITE_API_KEY || null;
 
-// 🔑 Jika butuh API key, uncomment dan isi:
-// const API_KEY = "your-api-key-here";
-// const API_KEY = process.env.REACT_APP_API_KEY;
+// 🐛 Debug mode - hanya untuk development
+const DEBUG_MODE = import.meta.env.VITE_APP_ENV === 'development';
+
+// Debug log minimal - hanya saat startup
+if (DEBUG_MODE) {
+    console.log("🔧 Luminara Chatbot - Environment loaded");
+}
 // ============================================
 
 const ChatbotPage = () => {
@@ -43,16 +49,14 @@ const ChatbotPage = () => {
 
     useEffect(() => {
         scrollToBottom();
-    }, [messages]);    const handleSendMessage = async (e) => {
+    }, [messages]);
+
+    const handleSendMessage = async (e) => {
         e.preventDefault();
         
-        if (!inputMessage.trim()) {
-            console.log("❌ INPUT VALIDATION ERROR: Empty message");
-            return;
-        }
-
-        console.log("✅ INPUT VALIDATION: Message validated successfully");
-        console.log("📝 User Input:", inputMessage);
+        if (!inputMessage.trim()) return;
+        
+        setShowQuickActions(false);
 
         const newMessage = {
             id: Date.now(),
@@ -67,12 +71,7 @@ const ChatbotPage = () => {
         setIsLoading(true);
 
         try {
-            console.log("🚀 PROCESS START: Calling chatbot API...");
-            
             const response = await sendMessageToAPI(currentMessage);
-            
-            console.log("✅ PROCESS SUCCESS: Response received from API");
-            console.log("📤 Bot Response:", response);
             
             const botResponse = {
                 id: Date.now() + 1,
@@ -82,133 +81,64 @@ const ChatbotPage = () => {
             };
 
             setMessages(prev => [...prev, botResponse]);
-            console.log("✅ UI UPDATE: Message added to chat successfully");
             
         } catch (error) {
-            console.error("❌ PROCESS ERROR:", error);
-            
-            let userErrorMessage = "Maaf, saya sedang mengalami gangguan. ";
-            let technicalDetails = "";
-
-            if (error.name === "NetworkError" || error.message.includes("fetch")) {
-                userErrorMessage += "Terjadi masalah koneksi jaringan.";
-                technicalDetails = "🌐 NETWORK ERROR: Gagal terhubung ke server";
-            } else if (error.message.includes("API request failed")) {
-                userErrorMessage += "Server API tidak merespons dengan baik.";
-                technicalDetails = `🔴 API ERROR: ${error.message}`;
-            } else if (error.message.includes("Invalid response format")) {
-                userErrorMessage += "Format respons dari server tidak valid.";
-                technicalDetails = "📦 RESPONSE FORMAT ERROR: Invalid data structure";
-            } else if (error.message.includes("CORS")) {
-                userErrorMessage += "Terjadi masalah akses lintas domain.";
-                technicalDetails = "🔒 CORS ERROR: Cross-origin request blocked";
-            } else {
-                userErrorMessage += "Terjadi kesalahan yang tidak diketahui.";
-                technicalDetails = `🔧 UNKNOWN ERROR: ${error.message}`;
+            if (DEBUG_MODE) {
+                console.error("❌ Chatbot Error:", error.message);
             }
-
-            console.error(technicalDetails);
-            console.error("📊 Error Details:", {
-                name: error.name,
-                message: error.message,
-                stack: error.stack,
-                timestamp: new Date().toISOString()
-            });
             
             const errorResponse = {
                 id: Date.now() + 1,
-                text: `${userErrorMessage}\n\n🔧 Technical Info: ${technicalDetails}\n\nSilakan coba lagi nanti atau hubungi administrator jika masalah berlanjut.`,
+                text: "Maaf, saya sedang mengalami gangguan. Silakan coba lagi nanti.",
                 sender: "bot",
                 timestamp: new Date()
             };
 
             setMessages(prev => [...prev, errorResponse]);
-            console.log("✅ ERROR HANDLING: Error message displayed to user");
             
         } finally {
             setIsLoading(false);
-            console.log("🏁 PROCESS END: Loading state cleared");
         }
     };    
-    // Disesuaikan dengan Flask backend format + logging detail
+    
     const sendMessageToAPI = async (message) => {
         try {
-            console.log("📡 API CALL START: Preparing request...");
-            console.log("🔗 API URL:", CHATBOT_API_URL);
-            console.log("📝 Message to send:", message);
-            
-            // Validasi URL
-            if (CHATBOT_API_URL.includes("huggingface-url")) {
+            if (CHATBOT_API_URL.includes("default-fallback-url")) {
                 throw new Error("API URL belum dikonfigurasi");
             }
 
-            console.log("📤 SENDING REQUEST: Calling fetch API...");
+            const headers = { 'Content-Type': 'application/json' };
+            
+            if (API_KEY) {
+                headers['Authorization'] = `Bearer ${API_KEY}`;
+            }
             
             const response = await fetch(CHATBOT_API_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // 🔑 Uncomment jika butuh API key:
-                    // 'Authorization': `Bearer ${API_KEY}`,
-                },
-                body: JSON.stringify({
-                    question: message  
-                }),
+                headers: headers,
+                body: JSON.stringify({ query: message }),
             });
 
-            console.log("📨 RESPONSE RECEIVED:");
-            console.log("  - Status:", response.status);
-            console.log("  - Status Text:", response.statusText);
-            console.log("  - Headers:", Object.fromEntries(response.headers.entries()));
-
             if (!response.ok) {
-                let errorDetails = `Status: ${response.status} (${response.statusText})`;
-                
-                // Coba ambil error message dari response body jika ada
-                try {
-                    const errorBody = await response.text();
-                    if (errorBody) {
-                        errorDetails += ` - Body: ${errorBody}`;
-                    }
-                } catch (e) {
-                    console.log("Could not read error response body");
-                }
-                
-                throw new Error(`API request failed with ${errorDetails}`);
+                throw new Error(`API request failed with status: ${response.status}`);
             }
 
-            console.log("📦 PARSING RESPONSE: Converting to JSON...");
             const data = await response.json();
-            console.log("✅ RESPONSE PARSED:", data);
 
-            if (data.status === "success" && data.answer) {
-                console.log("✅ SUCCESS PATH: Valid response with success status");
-                return data.answer;
-            } else if (data.answer) {
-                console.log("✅ FALLBACK PATH: Valid response without status field");
+            if (data && typeof data.response === 'string') {
+                return data.response;
+            } else if (data && typeof data.answer === 'string') {
                 return data.answer;
             } else if (data.error) {
-                console.log("❌ ERROR PATH: Server returned error");
                 throw new Error(`Server Error: ${data.error}`);
             } else {
-                console.log("❌ INVALID FORMAT: Response format tidak sesuai");
-                console.log("Expected: {answer: string} or {status: 'success', answer: string}");
-                console.log("Received:", data);
                 throw new Error("Invalid response format from API");
             }
 
         } catch (error) {
-            console.error("❌ API CALL FAILED:");
-            console.error("  - Error Type:", error.name);
-            console.error("  - Error Message:", error.message);
-            
-            if (error.name === "TypeError" && error.message.includes("fetch")) {
-                console.error("  - Possible Cause: Network issue, CORS, or invalid URL");
-            } else if (error.name === "SyntaxError") {
-                console.error("  - Possible Cause: Response is not valid JSON");
+            if (DEBUG_MODE) {
+                console.error("API Error:", error.message);
             }
-            
-            console.error("  - Full Error:", error);
             throw error;
         }
     };
@@ -220,8 +150,8 @@ const ChatbotPage = () => {
         }
     };
 
-    const handleQuickAction = (actionMessage) => {
-        setInputMessage(actionMessage);
+    const handleQuickAction = async (actionMessage) => {
+        setInputMessage("");
         setShowQuickActions(false);
         
         const newMessage = {
@@ -233,67 +163,40 @@ const ChatbotPage = () => {
 
         setMessages(prev => [...prev, newMessage]);
         setIsLoading(true);        
-        setTimeout(async () => {
-            try {
-                console.log("🚀 QUICK ACTION START: Processing quick action...");
-                console.log("📝 Quick Action Message:", actionMessage);
-                
-                const response = await sendMessageToAPI(actionMessage);
-                
-                console.log("✅ QUICK ACTION SUCCESS: Response received");
-                
-                const botResponse = {
-                    id: Date.now() + 1,
-                    text: response,
-                    sender: "bot",
-                    timestamp: new Date()
-                };
+        
+        try {
+            const response = await sendMessageToAPI(actionMessage);
+            
+            const botResponse = {
+                id: Date.now() + 1,
+                text: response,
+                sender: "bot",
+                timestamp: new Date()
+            };
 
-                setMessages(prev => [...prev, botResponse]);
-                console.log("✅ QUICK ACTION UI UPDATE: Message added successfully");
-                
-            } catch (error) {
-                console.error("❌ QUICK ACTION ERROR:", error);
-                
-                let userErrorMessage = "Maaf, terjadi kesalahan saat memproses quick action. ";
-                let technicalDetails = "";
-
-                if (error.message.includes("API URL belum dikonfigurasi")) {
-                    userErrorMessage += "API belum dikonfigurasi dengan benar.";
-                    technicalDetails = "⚙️ CONFIG ERROR: API URL not configured";
-                } else if (error.name === "NetworkError" || error.message.includes("fetch")) {
-                    userErrorMessage += "Terjadi masalah koneksi jaringan.";
-                    technicalDetails = "🌐 NETWORK ERROR: Connection failed";
-                } else {
-                    userErrorMessage += "Terjadi kesalahan yang tidak diketahui.";
-                    technicalDetails = `🔧 UNKNOWN ERROR: ${error.message}`;
-                }
-
-                console.error("📊 Quick Action Error Details:", {
-                    action: actionMessage,
-                    error: error.message,
-                    timestamp: new Date().toISOString()
-                });
-                
-                const errorResponse = {
-                    id: Date.now() + 1,
-                    text: `${userErrorMessage}\n\n🔧 Technical Info: ${technicalDetails}\n\nSilakan coba lagi atau gunakan input manual.`,
-                    sender: "bot",
-                    timestamp: new Date()
-                };
-
-                setMessages(prev => [...prev, errorResponse]);
-                console.log("✅ QUICK ACTION ERROR HANDLING: Error message displayed");
-                
-            } finally {
-                setIsLoading(false);
-                setInputMessage("");
-                console.log("🏁 QUICK ACTION END: Process completed");
+            setMessages(prev => [...prev, botResponse]);
+            
+        } catch (error) {
+            if (DEBUG_MODE) {
+                console.error("Quick Action Error:", error.message);
             }
-        }, 100);
+            
+            const errorResponse = {
+                id: Date.now() + 1,
+                text: "Maaf, terjadi kesalahan saat memproses permintaan Anda.",
+                sender: "bot",
+                timestamp: new Date()
+            };
+
+            setMessages(prev => [...prev, errorResponse]);
+            
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const formatTime = (timestamp) => {
+        if (!(timestamp instanceof Date)) return "";
         return timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
@@ -308,7 +211,7 @@ const ChatbotPage = () => {
                             <h1>Luminara AI Assistant</h1>
                         </div>
                         <p className="chatbot-subtitle">
-                            Ask me anything about religious communities, guides, and more!
+                            Tanyakan apa saja tentang komunitas, pemandu wisata religi, dan lainnya!
                         </p>
                     </header>
 
@@ -326,7 +229,7 @@ const ChatbotPage = () => {
                                     </div>
                                     <div className="message-content">
                                         <div className="message-bubble">
-                                            <p>{message.text}</p>
+                                            <div style={{ whiteSpace: 'pre-wrap' }}>{message.text}</div>
                                         </div>
                                         <span className="message-time">
                                             {formatTime(message.timestamp)}
@@ -337,7 +240,7 @@ const ChatbotPage = () => {
 
                             {showQuickActions && messages.length === 1 && (
                                 <div className="quick-actions">
-                                    <p className="quick-actions-title">Pertanyaan Populer:</p>
+                                    <p className="quick-actions-title">Atau coba pertanyaan populer ini:</p>
                                     <div className="quick-actions-grid">
                                         {quickActions.map((action, index) => (
                                             <button
@@ -379,7 +282,7 @@ const ChatbotPage = () => {
                                     value={inputMessage}
                                     onChange={(e) => setInputMessage(e.target.value)}
                                     onKeyPress={handleKeyPress}
-                                    placeholder="Type your message here..."
+                                    placeholder="Ketik pesan Anda di sini..."
                                     className="message-input"
                                     disabled={isLoading}
                                 />
