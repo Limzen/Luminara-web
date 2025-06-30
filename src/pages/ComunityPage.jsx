@@ -1,9 +1,10 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import FilterDropdown from "../utils/FilterDropDown";
 import CommunityCard from "../components/CommunityCard";
-import { communityData, filterOptions } from "../data/dummyData";
+import { filterOptions } from "../data/dummyData";
+import { getAllCommunities } from "../services/communityService";
 import "../styles/comunity.css";
 
 const CommunityPage = () => {
@@ -14,14 +15,25 @@ const CommunityPage = () => {
   const [isJenisOpen, setIsJenisOpen] = useState(false);
   const [isLokasiOpen, setIsLokasiOpen] = useState(false);
 
-  const filteredCommunityData = useMemo(() => {
-    return communityData.filter((community) => {
-      const agamaMatch = selectedAgama === "All" || community.agama === selectedAgama;
-      const jenisMatch = selectedJenis === "All" || community.jenisKegiatan === selectedJenis;
-      const lokasiMatch = selectedLokasi === "All" || community.lokasiKegiatan === selectedLokasi;
-      
-      return agamaMatch && jenisMatch && lokasiMatch;
-    });
+  const [communities, setCommunities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch communities from API
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+
+    // Build filters for API
+    const filters = {};
+    if (selectedAgama !== "All") filters.agama = selectedAgama;
+    if (selectedJenis !== "All") filters.jenis_kegiatan = selectedJenis;
+    if (selectedLokasi !== "All") filters.lokasi_kegiatan = selectedLokasi;
+
+    getAllCommunities(filters)
+      .then(setCommunities)
+      .catch((err) => setError("Failed to load communities"))
+      .finally(() => setLoading(false));
   }, [selectedAgama, selectedJenis, selectedLokasi]);
 
   const handleAgamaSelect = (option) => {
@@ -88,14 +100,22 @@ const CommunityPage = () => {
           </div>
 
           <div className="community-grid">
-            {filteredCommunityData.length > 0 ? (
-              filteredCommunityData.map((community) => (
+            {loading ? (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem', color: '#666', fontSize: '1.1rem' }}>
+                Loading communities...
+              </div>
+            ) : error ? (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem', color: 'red', fontSize: '1.1rem' }}>
+                {error}
+              </div>
+            ) : communities.length > 0 ? (
+              communities.map((community) => (
                 <CommunityCard key={community.id} community={community} />
               ))
             ) : (
-              <div style={{ 
-                gridColumn: '1 / -1', 
-                textAlign: 'center', 
+              <div style={{
+                gridColumn: '1 / -1',
+                textAlign: 'center',
                 padding: '2rem',
                 color: '#666',
                 fontSize: '1.1rem'
