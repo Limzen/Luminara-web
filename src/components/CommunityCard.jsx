@@ -11,10 +11,10 @@ const CommunityCard = ({ community }) => {
   return (
     <div className="card-wrapper">
       <div className="card">
-        <img src={community.image} alt={community.title} className="card-image" />
+        <img src={community.logo_url} alt={community.name} className="card-image" />
       </div>
       <div className="card-info">
-        <h3>{community.title}</h3>
+        <h3>{community.name}</h3>
         <a href="#" onClick={handleJoinGroup} className="join-group-link">Join group →</a>
       </div>
     </div>
