@@ -1,12 +1,10 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import HomePage from '../pages/HomePage';
+import LuxeHomePage from '../pages/LuxeHomePage';
+import ArticlesPage from '../pages/ArticlesPage';
 import ArticlePage from '../pages/ArticlePage';
 import DirectoryPage from '../pages/DirectoryPage';
 import DirectoryDetailPage from '../pages/DirectoryDetailPage';
-import '../styles/DirectoryPage.css';
-
-
 import CommunityPage from '../pages/ComunityPage';
 import RegisterPage from '../pages/RegisterPage';
 import JoinGroupPage from '../pages/JoinGroupPage';
@@ -21,12 +19,12 @@ import CreateItineraryPage from "../pages/CreateItineraryPage.jsx";
 import ItineraryDetailPage from "../pages/ItineraryDetailPage.jsx";
 import ProfilePage from '../pages/ProfilePage.jsx';
 import ChatbotPage from '../pages/ChatbotPage.jsx';
-
-
+import NotFoundPage from '../pages/NotFoundPage.jsx';
 
 const AppRoutes = () => (
   <Routes>
-    <Route path="/" element={<HomePage />} />
+    <Route path="/" element={<LuxeHomePage />} />
+    <Route path="/article" element={<ArticlesPage />} />
     <Route path="/article/:id" element={<ArticlePage />} />
     <Route path="/directory" element={<DirectoryPage />} />
     <Route path="/directory/:id" element={<DirectoryDetailPage />} />
@@ -44,9 +42,9 @@ const AppRoutes = () => (
     <Route path="/itinerary/:id" element={<ItineraryDetailPage />} />
     <Route path="/profile" element={<ProfilePage />} />
     <Route path="/chatbot" element={<ChatbotPage />} />
-    {/* Add more routes as needed */}
+    {/* 404 - Must be last */}
+    <Route path="*" element={<NotFoundPage />} />
   </Routes>
 );
-
 
 export default AppRoutes;

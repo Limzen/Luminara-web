@@ -1,304 +1,218 @@
-import React, { useState, useRef, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import "../styles/chatbotpage.css";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane, faRobot, faUser } from '@fortawesome/free-solid-svg-icons';
+import React, { useState, useRef, useEffect } from 'react';
+import { LuxeNavbar } from '../components/luxe/LuxeComponents';
+import '../styles/luxe-pages.css';
 
+// Icons
+const Icons = {
+    Send: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="22" y1="2" x2="11" y2="13" />
+            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
+    ),
+    Bot: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="3" y="11" width="18" height="10" rx="2" />
+            <circle cx="12" cy="5" r="2" />
+            <line x1="12" y1="7" x2="12" y2="11" />
+            <line x1="8" y1="16" x2="8" y2="16" />
+            <line x1="16" y1="16" x2="16" y2="16" />
+        </svg>
+    ),
+    Sparkles: () => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 3v18M5.5 8.5l13 7M5.5 15.5l13-7" />
+        </svg>
+    ),
+};
 
-// ============= API CONFIGURATION =============
-// 🔒 SECURE: API URL sekarang diambil dari environment variable
-const CHATBOT_API_URL = import.meta.env.VITE_CHATBOT_API_URL || "https://default-fallback-url.com/chat";
+// Initial greeting message
+const initialMessages = [
+    {
+        id: 1,
+        type: 'bot',
+        text: "Selamat datang di Luminara AI Assistant! 👋\n\nSaya siap membantu Anda menemukan destinasi wisata religi terbaik di Medan. Tanyakan apa saja tentang:\n\n• Masjid, Vihara, Gereja, dan Kuil\n• Rekomendasi itinerary\n• Informasi jam buka dan lokasi\n• Tips perjalanan spiritual",
+        timestamp: new Date()
+    }
+];
 
-// 🔑 API Key (jika diperlukan)
-const API_KEY = import.meta.env.VITE_API_KEY || null;
-
-// 🐛 Debug mode - hanya untuk development
-const DEBUG_MODE = import.meta.env.VITE_APP_ENV === 'development';
-
-// Debug log minimal - hanya saat startup
-if (DEBUG_MODE) {
-    console.log("🔧 Luminara Chatbot - Environment loaded");
-}
-// ============================================
+// Quick action suggestions
+const quickActions = [
+    "Masjid populer di Medan?",
+    "Rekomendasi wisata religi",
+    "Jam buka Masjid Raya",
+    "Buat itinerary 1 hari"
+];
 
 const ChatbotPage = () => {
-    const [messages, setMessages] = useState([
-        {
-            id: 1,
-            text: "Halo! Saya adalah Luminara AI Assistant. Saya siap membantu Anda menemukan tempat ibadah, merencanakan itinerary spiritual, mencari guide, atau bergabung dengan komunitas. Ada yang bisa saya bantu hari ini? 🙏",
-            sender: "bot",
-            timestamp: new Date()
-        }
-    ]);
-    const [inputMessage, setInputMessage] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [showQuickActions, setShowQuickActions] = useState(true);
+    const [messages, setMessages] = useState(initialMessages);
+    const [input, setInput] = useState('');
+    const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef(null);
 
-    const quickActions = [
-        { text: "🕌 Cari Tempat Ibadah", message: "Saya ingin mencari tempat ibadah" },
-        { text: "📅 Buat Itinerary", message: "Bantuan membuat itinerary perjalanan spiritual" },
-        { text: "👨‍🏫 Cari Guide", message: "Saya butuh guide untuk perjalanan spiritual" },
-        { text: "👥 Bergabung Komunitas", message: "Bagaimana cara bergabung dengan komunitas?" },
-    ];
-
+    // Auto-scroll to bottom
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
 
-    const handleSendMessage = async (e) => {
-        e.preventDefault();
-        
-        if (!inputMessage.trim()) return;
-        
-        setShowQuickActions(false);
+    // Send message handler
+    const sendMessage = async (text = input) => {
+        if (!text.trim()) return;
 
-        const newMessage = {
+        // Add user message
+        const userMessage = {
             id: Date.now(),
-            text: inputMessage,
-            sender: "user",
+            type: 'user',
+            text: text.trim(),
             timestamp: new Date()
         };
 
-        setMessages(prev => [...prev, newMessage]);
-        const currentMessage = inputMessage;
-        setInputMessage("");
-        setIsLoading(true);
+        setMessages(prev => [...prev, userMessage]);
+        setInput('');
+        setIsTyping(true);
 
-        try {
-            const response = await sendMessageToAPI(currentMessage);
-            
-            const botResponse = {
-                id: Date.now() + 1,
-                text: response,
-                sender: "bot",
+        // Simulate bot response (replace with actual API call)
+        setTimeout(() => {
+            const botResponses = [
+                "Terima kasih atas pertanyaannya! Saya menemukan beberapa destinasi wisata religi yang menarik di Medan untuk Anda.",
+                "Berdasarkan pencarian, berikut rekomendasi saya untuk wisata religi di Medan:\n\n1. **Masjid Raya Al Mashun** - Masjid bersejarah dengan arsitektur megah\n2. **Vihara Maitreya** - Vihara Buddha terbesar di Sumatera\n3. **Gereja HKBP** - Gereja bersejarah dengan arsitektur kolonial\n\nApakah Anda ingin informasi lebih detail tentang salah satunya?",
+                "Untuk itinerary 1 hari wisata religi di Medan, saya sarankan:\n\n**Pagi (08:00)** - Mulai dari Masjid Raya Al Mashun\n**Siang (11:00)** - Kunjungi Vihara Maitreya\n**Sore (14:00)** - Lanjut ke Gereja HKBP\n**Petang (16:00)** - Menikmati sunset di area Merdeka Walk\n\nMau saya buatkan detail routenya?"
+            ];
+
+            const botMessage = {
+                id: Date.now(),
+                type: 'bot',
+                text: botResponses[Math.floor(Math.random() * botResponses.length)],
                 timestamp: new Date()
             };
 
-            setMessages(prev => [...prev, botResponse]);
-            
-        } catch (error) {
-            if (DEBUG_MODE) {
-                console.error("❌ Chatbot Error:", error.message);
-            }
-            
-            const errorResponse = {
-                id: Date.now() + 1,
-                text: "Maaf, saya sedang mengalami gangguan. Silakan coba lagi nanti.",
-                sender: "bot",
-                timestamp: new Date()
-            };
-
-            setMessages(prev => [...prev, errorResponse]);
-            
-        } finally {
-            setIsLoading(false);
-        }
-    };    
-    
-    const sendMessageToAPI = async (message) => {
-        try {
-            if (CHATBOT_API_URL.includes("default-fallback-url")) {
-                throw new Error("API URL belum dikonfigurasi");
-            }
-
-            const headers = { 'Content-Type': 'application/json' };
-            
-            if (API_KEY) {
-                headers['Authorization'] = `Bearer ${API_KEY}`;
-            }
-            
-            const response = await fetch(CHATBOT_API_URL, {
-                method: 'POST',
-                headers: headers,
-                body: JSON.stringify({ query: message }),
-            });
-
-            if (!response.ok) {
-                throw new Error(`API request failed with status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            if (data && typeof data.response === 'string') {
-                return data.response;
-            } else if (data && typeof data.answer === 'string') {
-                return data.answer;
-            } else if (data.error) {
-                throw new Error(`Server Error: ${data.error}`);
-            } else {
-                throw new Error("Invalid response format from API");
-            }
-
-        } catch (error) {
-            if (DEBUG_MODE) {
-                console.error("API Error:", error.message);
-            }
-            throw error;
-        }
+            setMessages(prev => [...prev, botMessage]);
+            setIsTyping(false);
+        }, 1500);
     };
 
+    // Handle key press
     const handleKeyPress = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            handleSendMessage(e);
+            sendMessage();
         }
-    };
-
-    const handleQuickAction = async (actionMessage) => {
-        setInputMessage("");
-        setShowQuickActions(false);
-        
-        const newMessage = {
-            id: Date.now(),
-            text: actionMessage,
-            sender: "user",
-            timestamp: new Date()
-        };
-
-        setMessages(prev => [...prev, newMessage]);
-        setIsLoading(true);        
-        
-        try {
-            const response = await sendMessageToAPI(actionMessage);
-            
-            const botResponse = {
-                id: Date.now() + 1,
-                text: response,
-                sender: "bot",
-                timestamp: new Date()
-            };
-
-            setMessages(prev => [...prev, botResponse]);
-            
-        } catch (error) {
-            if (DEBUG_MODE) {
-                console.error("Quick Action Error:", error.message);
-            }
-            
-            const errorResponse = {
-                id: Date.now() + 1,
-                text: "Maaf, terjadi kesalahan saat memproses permintaan Anda.",
-                sender: "bot",
-                timestamp: new Date()
-            };
-
-            setMessages(prev => [...prev, errorResponse]);
-            
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const formatTime = (timestamp) => {
-        if (!(timestamp instanceof Date)) return "";
-        return timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
     return (
-        <div className="chatbot-page">
-            <Navbar />
-            <main className="chatbot-main">
-                <div className="chatbot-container">
-                    <header className="chatbot-header">
-                        <div className="chatbot-title">
-                            <FontAwesomeIcon icon={faRobot} className="chatbot-icon" />
-                            <h1>Luminara AI Assistant</h1>
+        <div className="luxe-page">
+            <LuxeNavbar />
+
+            <div className="luxe-chat">
+                {/* Chat Header */}
+                <div className="luxe-chat__header">
+                    <div className="luxe-container" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+                        <div style={{
+                            width: '40px',
+                            height: '40px',
+                            background: 'linear-gradient(135deg, var(--gold-400), var(--gold-500))',
+                            borderRadius: 'var(--radius-lg)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <Icons.Sparkles />
                         </div>
-                        <p className="chatbot-subtitle">
-                            Tanyakan apa saja tentang komunitas, pemandu wisata religi, dan lainnya!
-                        </p>
-                    </header>
-
-                    <div className="chat-window">
-                        <div className="messages-container">
-                            {messages.map((message) => (
-                                <div
-                                    key={message.id}
-                                    className={`message ${message.sender === 'user' ? 'user-message' : 'bot-message'}`}
-                                >
-                                    <div className="message-avatar">
-                                        <FontAwesomeIcon 
-                                            icon={message.sender === 'user' ? faUser : faRobot} 
-                                        />
-                                    </div>
-                                    <div className="message-content">
-                                        <div className="message-bubble">
-                                            <div style={{ whiteSpace: 'pre-wrap' }}>{message.text}</div>
-                                        </div>
-                                        <span className="message-time">
-                                            {formatTime(message.timestamp)}
-                                        </span>
-                                    </div>
-                                </div>
-                            ))}
-
-                            {showQuickActions && messages.length === 1 && (
-                                <div className="quick-actions">
-                                    <p className="quick-actions-title">Atau coba pertanyaan populer ini:</p>
-                                    <div className="quick-actions-grid">
-                                        {quickActions.map((action, index) => (
-                                            <button
-                                                key={index}
-                                                className="quick-action-button"
-                                                onClick={() => handleQuickAction(action.message)}
-                                            >
-                                                {action.text}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                            
-                            {isLoading && (
-                                <div className="message bot-message">
-                                    <div className="message-avatar">
-                                        <FontAwesomeIcon icon={faRobot} />
-                                    </div>
-                                    <div className="message-content">
-                                        <div className="message-bubble loading">
-                                            <div className="typing-indicator">
-                                                <span></span>
-                                                <span></span>
-                                                <span></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            <div ref={messagesEndRef} />
+                        <div>
+                            <h1 className="luxe-chat__title">Luminara AI</h1>
+                            <span style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)' }}>
+                                {isTyping ? 'Typing...' : 'Online'}
+                            </span>
                         </div>
-
-                        <form className="message-input-form" onSubmit={handleSendMessage}>
-                            <div className="input-container">
-                                <input
-                                    type="text"
-                                    value={inputMessage}
-                                    onChange={(e) => setInputMessage(e.target.value)}
-                                    onKeyPress={handleKeyPress}
-                                    placeholder="Ketik pesan Anda di sini..."
-                                    className="message-input"
-                                    disabled={isLoading}
-                                />
-                                <button
-                                    type="submit"
-                                    className="send-button"
-                                    disabled={isLoading || !inputMessage.trim()}
-                                >
-                                    <FontAwesomeIcon icon={faPaperPlane} />
-                                </button>
-                            </div>
-                        </form>
                     </div>
                 </div>
-            </main>
-            <Footer />
+
+                {/* Messages */}
+                <div className="luxe-chat__messages">
+                    <div className="luxe-container">
+                        {messages.map((message) => (
+                            <div
+                                key={message.id}
+                                className={`luxe-chat__message luxe-chat__message--${message.type}`}
+                            >
+                                <p className="luxe-chat__message-text" style={{ whiteSpace: 'pre-line' }}>
+                                    {message.text}
+                                </p>
+                            </div>
+                        ))}
+
+                        {/* Typing Indicator */}
+                        {isTyping && (
+                            <div className="luxe-chat__message luxe-chat__message--bot">
+                                <div style={{ display: 'flex', gap: '4px' }}>
+                                    <span className="luxe-spinner" style={{ width: '8px', height: '8px' }}></span>
+                                    <span className="luxe-spinner" style={{ width: '8px', height: '8px', animationDelay: '0.2s' }}></span>
+                                    <span className="luxe-spinner" style={{ width: '8px', height: '8px', animationDelay: '0.4s' }}></span>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Quick Actions (only show if few messages) */}
+                        {messages.length <= 2 && !isTyping && (
+                            <div style={{
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                gap: 'var(--space-2)',
+                                marginTop: 'var(--space-4)'
+                            }}>
+                                {quickActions.map((action, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => sendMessage(action)}
+                                        style={{
+                                            padding: 'var(--space-2) var(--space-4)',
+                                            background: 'rgba(212, 168, 85, 0.1)',
+                                            border: '1px solid rgba(212, 168, 85, 0.3)',
+                                            borderRadius: 'var(--radius-full)',
+                                            color: 'var(--gold-400)',
+                                            fontSize: 'var(--text-sm)',
+                                            cursor: 'pointer',
+                                            transition: 'all var(--duration-base) var(--ease-smooth)'
+                                        }}
+                                    >
+                                        {action}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+
+                        <div ref={messagesEndRef} />
+                    </div>
+                </div>
+
+                {/* Input */}
+                <div className="luxe-chat__input-container">
+                    <div className="luxe-container">
+                        <div className="luxe-chat__input-wrapper">
+                            <input
+                                type="text"
+                                className="luxe-chat__input"
+                                placeholder="Ketik pesan..."
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                onKeyDown={handleKeyPress}
+                                disabled={isTyping}
+                            />
+                            <button
+                                className="luxe-chat__send"
+                                onClick={() => sendMessage()}
+                                disabled={!input.trim() || isTyping}
+                            >
+                                <Icons.Send />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

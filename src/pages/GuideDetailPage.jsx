@@ -1,266 +1,272 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import { guideService } from '../services/guideService';
-import '../styles/GuideDetailPage.css';
+import { useParams, Link } from 'react-router-dom';
+import { LuxeNavbar, LuxeFooter, LuxeButton, LuxeRating } from '../components/luxe/LuxeComponents';
+import '../styles/luxe-pages.css';
+
+// Icons
+const Icons = {
+  Star: () => (
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    </svg>
+  ),
+  MapPin: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+      <circle cx="12" cy="10" r="3" />
+    </svg>
+  ),
+  Users: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  ),
+  Award: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="8" r="7" />
+      <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+    </svg>
+  ),
+  ArrowLeft: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <line x1="19" y1="12" x2="5" y2="12" />
+      <polyline points="12 19 5 12 12 5" />
+    </svg>
+  ),
+  MessageCircle: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  ),
+  Check: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  ),
+};
 
 const GuideDetailPage = () => {
   const { id } = useParams();
-  const [guide, setGuide] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [guide, setGuide] = useState(null);
 
-  // Fetch guide from API
   useEffect(() => {
-    const fetchGuide = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await guideService.getGuideById(id);
-        if (response.status === 200 && response.data) {
-          setGuide(response.data);
-        } else {
-          throw new Error('Failed to fetch guide');
-        }
-      } catch (err) {
-        console.error('Error fetching guide:', err);
-        setError('Failed to load guide. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) {
-      fetchGuide();
-    }
+    // Simulate API fetch
+    setTimeout(() => {
+      setGuide({
+        id,
+        name: 'Ahmad Rahman',
+        bio: 'Experienced local guide specializing in Islamic heritage sites with over 10 years of experience guiding tourists and pilgrims through Medan\'s most sacred destinations.',
+        location: 'Medan, Indonesia',
+        rating: 4.9,
+        reviews_count: 127,
+        tours_completed: 450,
+        languages: ['Indonesian', 'English', 'Arabic'],
+        specialties: ['Islamic Heritage', 'Historical Sites', 'Cultural Tours'],
+        verified: true,
+        profile_image: `https://ui-avatars.com/api/?name=Ahmad%20Rahman&background=d4a855&color=0a0f1c&size=200`
+      });
+      setLoading(false);
+    }, 1000);
   }, [id]);
 
-  // Loading state
   if (loading) {
     return (
-      <div className="guide-detail-page">
-        <Navbar />
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '3rem',
-          color: '#666'
-        }}>
-          Loading guide details...
+      <div className="luxe-page">
+        <LuxeNavbar />
+        <div className="luxe-loading-page">
+          <div className="luxe-spinner"></div>
         </div>
-        <Footer />
+        <LuxeFooter />
       </div>
     );
   }
 
-  // Error state
-  if (error) {
-    return (
-      <div className="guide-detail-page">
-        <Navbar />
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '3rem',
-          color: '#e74c3c',
-          backgroundColor: '#fdf2f2',
-          margin: '1rem',
-          borderRadius: '8px'
-        }}>
-          {error}
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  // Guide not found
   if (!guide) {
     return (
-      <div className="guide-detail-page">
-        <Navbar />
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '3rem'
-        }}>
-          <h2>Guide not found</h2>
-          <p>The guide you are looking for does not exist.</p>
-        </div>
-        <Footer />
+      <div className="luxe-page">
+        <LuxeNavbar />
+        <section className="luxe-section" style={{ paddingTop: '140px' }}>
+          <div className="luxe-container">
+            <div className="luxe-empty">
+              <h3 className="luxe-empty__title">Guide not found</h3>
+              <Link to="/guide">
+                <LuxeButton variant="primary">Browse Guides</LuxeButton>
+              </Link>
+            </div>
+          </div>
+        </section>
+        <LuxeFooter />
       </div>
     );
   }
 
   return (
-    <div className="guide-detail-page">
-      <Navbar />
-      <div className="guide-detail-content">
-        <h1 className="guide-detail-title">{guide.name}</h1>
-        <div className="guide-detail-image-wrapper">
-          <img 
-            src={guide.image_url || '/images/masjid-almashun.jpg'} 
-            alt={guide.name} 
-            className="guide-detail-image" 
-          />
-        </div>
-        
-        {/* Short description */}
-        {guide.short_desc && (
-          <section className="guide-detail-section">
-            <h2>Overview</h2>
-            <p>{guide.short_desc}</p>
-          </section>
-        )}
+    <div className="luxe-page">
+      <LuxeNavbar />
 
-        {/* Full description with markdown support */}
-        {guide.full_desc && (
-          <section className="guide-detail-section">
-            <h2>Detailed Information</h2>
-            <div>
-              <ReactMarkdown
-                components={{
-                  h1: ({ children }) => (
-                    <h1 style={{ fontWeight: 700, fontSize: '1.8rem', margin: '1.5rem 0 0.5rem 0', color: '#a36a2e' }}>
-                      {children}
-                    </h1>
-                  ),
-                  h2: ({ children }) => (
-                    <h2 style={{ fontWeight: 700, fontSize: '1.5rem', margin: '1.5rem 0 0.5rem 0', color: '#a36a2e' }}>
-                      {children}
-                    </h2>
-                  ),
-                  h3: ({ children }) => (
-                    <h3 style={{ fontWeight: 700, fontSize: '1.2rem', margin: '1.5rem 0 0.5rem 0', color: '#a36a2e' }}>
-                      {children}
-                    </h3>
-                  ),
-                  p: ({ children }) => (
-                    <p style={{ marginBottom: '1rem', color: '#222', fontSize: '1.08rem', lineHeight: 1.7 }}>
-                      {children}
-                    </p>
-                  ),
-                  ul: ({ children }) => (
-                    <ul style={{ marginBottom: '1.5rem', color: '#222', fontSize: '1.08rem', lineHeight: 1.7, paddingLeft: 20 }}>
-                      {children}
-                    </ul>
-                  ),
-                  ol: ({ children }) => (
-                    <ol style={{ marginBottom: '1.5rem', color: '#222', fontSize: '1.08rem', lineHeight: 1.7, paddingLeft: 20 }}>
-                      {children}
-                    </ol>
-                  ),
-                  li: ({ children }) => (
-                    <li style={{ marginBottom: '0.5rem' }}>
-                      {children}
-                    </li>
-                  ),
-                  strong: ({ children }) => (
-                    <strong style={{ fontWeight: 700, color: '#a36a2e' }}>
-                      {children}
-                    </strong>
-                  ),
-                  em: ({ children }) => (
-                    <em style={{ fontStyle: 'italic', color: '#666' }}>
-                      {children}
-                    </em>
-                  ),
-                  blockquote: ({ children }) => (
-                    <blockquote style={{ 
-                      borderLeft: '4px solid #a36a2e', 
-                      paddingLeft: '1rem', 
-                      margin: '1.5rem 0', 
-                      fontStyle: 'italic',
-                      color: '#666',
-                      backgroundColor: '#f9f6f2',
-                      padding: '1rem',
-                      borderRadius: '4px'
-                    }}>
-                      {children}
-                    </blockquote>
-                  ),
-                  code: ({ children }) => (
-                    <code style={{ 
-                      backgroundColor: '#f4f4f4', 
-                      padding: '0.2rem 0.4rem', 
-                      borderRadius: '3px',
-                      fontFamily: 'monospace',
-                      fontSize: '0.9em'
-                    }}>
-                      {children}
-                    </code>
-                  ),
-                  pre: ({ children }) => (
-                    <pre style={{ 
-                      backgroundColor: '#f4f4f4', 
-                      padding: '1rem', 
-                      borderRadius: '8px',
-                      overflow: 'auto',
-                      margin: '1rem 0'
-                    }}>
-                      {children}
-                    </pre>
-                  ),
-                  a: ({ href, children }) => (
-                    <a 
-                      href={href} 
-                      style={{ 
-                        color: '#a36a2e', 
-                        textDecoration: 'underline',
-                        fontWeight: 500
-                      }}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {children}
-                    </a>
-                  ),
+      <section className="luxe-section" style={{ paddingTop: '140px' }}>
+        <div className="luxe-container" style={{ maxWidth: '900px' }}>
+          {/* Back Link */}
+          <Link
+            to="/guide"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 'var(--space-2)',
+              color: 'var(--gray-400)',
+              marginBottom: 'var(--space-6)',
+              textDecoration: 'none',
+              fontSize: 'var(--text-sm)'
+            }}
+          >
+            <Icons.ArrowLeft /> Back to Guides
+          </Link>
+
+          <div className="luxe-detail-card">
+            {/* Profile Header */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'center',
+              paddingBottom: 'var(--space-8)',
+              borderBottom: '1px solid rgba(255,255,255,0.05)',
+              marginBottom: 'var(--space-8)'
+            }}>
+              <img
+                src={guide.profile_image}
+                alt={guide.name}
+                onError={(e) => {
+                  e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(guide.name)}&background=d4a855&color=0a0f1c&size=150`;
                 }}
-              >
-                {guide.full_desc}
-              </ReactMarkdown>
+                style={{
+                  width: '150px',
+                  height: '150px',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  border: '4px solid var(--gold-400)',
+                  marginBottom: 'var(--space-6)'
+                }}
+              />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-2)' }}>
+                <h1 style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'var(--text-3xl)',
+                  fontWeight: 700,
+                  color: 'var(--white)'
+                }}>
+                  {guide.name}
+                </h1>
+                {guide.verified && (
+                  <span style={{
+                    background: 'var(--gold-400)',
+                    color: 'var(--navy-900)',
+                    borderRadius: '50%',
+                    width: '24px',
+                    height: '24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <Icons.Check />
+                  </span>
+                )}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', color: 'var(--gray-400)', marginBottom: 'var(--space-4)' }}>
+                <Icons.MapPin />
+                <span>{guide.location}</span>
+              </div>
+
+              {/* Stats */}
+              <div className="luxe-profile-stats" style={{ marginTop: 'var(--space-4)' }}>
+                <div className="luxe-profile-stat">
+                  <span className="luxe-profile-stat__value">{guide.rating}</span>
+                  <span className="luxe-profile-stat__label">Rating</span>
+                </div>
+                <div className="luxe-profile-stat">
+                  <span className="luxe-profile-stat__value">{guide.reviews_count}</span>
+                  <span className="luxe-profile-stat__label">Reviews</span>
+                </div>
+                <div className="luxe-profile-stat">
+                  <span className="luxe-profile-stat__value">{guide.tours_completed}</span>
+                  <span className="luxe-profile-stat__label">Tours</span>
+                </div>
+              </div>
             </div>
-          </section>
-        )}
 
-        {/* Default content if no full_desc is provided */}
-        {!guide.full_desc && (
-          <>
-            <section className="guide-detail-section">
-              <h2>Historical Background</h2>
-              <p>
-                This religious site holds significant historical and cultural importance in the region. 
-                The architecture and design reflect the rich heritage and spiritual traditions that have 
-                been preserved and celebrated throughout the years. Visitors can experience the deep 
-                connection between faith, culture, and community that this site represents.
+            {/* About */}
+            <div style={{ marginBottom: 'var(--space-8)' }}>
+              <h3 style={{
+                fontSize: 'var(--text-xl)',
+                fontWeight: 600,
+                color: 'var(--white)',
+                marginBottom: 'var(--space-4)'
+              }}>
+                About
+              </h3>
+              <p style={{ color: 'var(--gray-300)', lineHeight: 1.8 }}>
+                {guide.bio}
               </p>
-            </section>
-            <section className="guide-detail-section">
-              <h2>Etiquette When Visiting</h2>
-              <ol className="guide-detail-list">
-                <li><b>Dress Modestly</b><br />Both men and women should wear modest clothing. Women are encouraged to wear appropriate head coverings, and attire should cover shoulders, arms, and legs.</li>
-                <li><b>Remove Shoes</b><br />Shoes must be removed before entering the main areas. Designated areas are provided to store footwear.</li>
-                <li><b>Silence and Respect</b><br />Maintain a quiet and respectful demeanor. This is an active place of worship, so avoid loud conversations or phone use.</li>
-                <li><b>Follow Local Customs</b><br />Respect any specific guidance provided by staff or signage. During religious events or prayer times, certain areas may be restricted to worshippers only.</li>
-                <li><b>Avoid Physical Contact</b><br />Physical interaction between male and female visitors (such as handshakes or hugs) should be avoided inside the sacred areas.</li>
-              </ol>
-            </section>
-          </>
-        )}
+            </div>
 
-        {/* Quick Info section */}
-        <section className="guide-detail-section">
-          <h2>Quick Information</h2>
-          <ul style={{ listStyle: 'none', padding: 0 }}>
-            <li style={{ marginBottom: '0.5rem' }}><b>Name:</b> {guide.name}</li>
-            <li style={{ marginBottom: '0.5rem' }}><b>Type:</b> Religious Guide</li>
-            <li style={{ marginBottom: '0.5rem' }}><b>Description:</b> {guide.short_desc || 'A comprehensive guide to this religious site'}</li>
-            {guide.full_desc && <li style={{ marginBottom: '0.5rem' }}><b>Full Guide:</b> Available above</li>}
-          </ul>
-        </section>
-      </div>
-      <Footer />
+            {/* Languages & Specialties */}
+            <div className="luxe-grid luxe-grid--2" style={{ gap: 'var(--space-6)', marginBottom: 'var(--space-8)' }}>
+              <div className="luxe-glass" style={{ padding: 'var(--space-5)' }}>
+                <h4 style={{
+                  fontSize: 'var(--text-sm)',
+                  fontWeight: 600,
+                  color: 'var(--gold-400)',
+                  marginBottom: 'var(--space-3)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em'
+                }}>
+                  Languages
+                </h4>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+                  {guide.languages.map(lang => (
+                    <span key={lang} className="luxe-badge luxe-badge--default">{lang}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="luxe-glass" style={{ padding: 'var(--space-5)' }}>
+                <h4 style={{
+                  fontSize: 'var(--text-sm)',
+                  fontWeight: 600,
+                  color: 'var(--gold-400)',
+                  marginBottom: 'var(--space-3)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em'
+                }}>
+                  Specialties
+                </h4>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+                  {guide.specialties.map(spec => (
+                    <span key={spec} className="luxe-badge luxe-badge--gold">{spec}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
+              <LuxeButton variant="primary" icon={<Icons.MessageCircle />} style={{ flex: 1 }}>
+                Contact Guide
+              </LuxeButton>
+              <LuxeButton variant="secondary">
+                Book a Tour
+              </LuxeButton>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <LuxeFooter />
     </div>
   );
 };
 
-export default GuideDetailPage; 
+export default GuideDetailPage;

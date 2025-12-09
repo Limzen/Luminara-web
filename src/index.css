@@ -1,91 +1,88 @@
-/* GLOBAL RESET DAN LAYOUT PENUH */
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* ============================================
+   GLOBAL STYLES - LUMINARA
+   Imports the Luxe Design System
+   ============================================ */
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+@import './styles/luxe-design.css';
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden;
+/* Global Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
-  box-sizing: border-box;
-  overflow-x: hidden;
-}
-
-*, *::before, *::after {
-  box-sizing: inherit;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100vh;
-  box-sizing: border-box;
-  display: block;
+  font-family: var(--font-body, 'Sora', system-ui, sans-serif);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--gray-100, #f1f5f9);
+  background-color: var(--navy-900, #0a0f1c);
   overflow-x: hidden;
-  background-color: #ffffff;
-  color: #213547;
+  min-height: 100vh;
 }
 
+#root {
+  min-height: 100vh;
+}
+
+/* Links */
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  color: inherit;
+  text-decoration: none;
 }
 
-a:hover {
-  color: #535bf2;
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Focus styles */
+:focus-visible {
+  outline: 2px solid var(--gold-400, #fcd34d);
+  outline-offset: 2px;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #f9f9f9;
-  cursor: pointer;
-  transition: border-color 0.25s;
+/* Selection */
+::selection {
+  background: var(--gold-400, #fcd34d);
+  color: var(--navy-900, #0a0f1c);
 }
 
-button:hover {
-  border-color: #646cff;
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+::-webkit-scrollbar-track {
+  background: var(--navy-800, #0f172a);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
+::-webkit-scrollbar-thumb {
+  background: var(--navy-600, #334155);
+  border-radius: 4px;
+}
 
-  a:hover {
-    color: #747bff;
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: var(--navy-500, #475569);
+}
 
-  button {
-    background-color: #f9f9f9;
-  }
+/* Leaflet Map fix for dark theme */
+.leaflet-container {
+  background: var(--navy-800, #0f172a) !important;
+}
+
+.leaflet-tile-pane {
+  filter: brightness(0.8) contrast(1.1);
 }
