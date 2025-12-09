@@ -671,3 +671,45 @@
         font-size: 0.75rem !important;
     }
 }
+
+/* ============================================
+   SCROLL INDICATOR FIX
+   ============================================ */
+.scroll-indicator {
+    position: absolute !important;
+    bottom: 100px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+/* ============================================
+   SCROLL INDICATOR - SIMPLE MOBILE FIX
+   Just move it lower so it doesn't overlap stats
+   ============================================ */
+@media (max-width: 768px) {
+    .scroll-indicator {
+        bottom: -60px !important;
+    }
+}
+
+/* Override previous - move scroll indicator much lower */
+@media (max-width: 768px) {
+    .scroll-indicator {
+        bottom: -120px !important;
+        z-index: 100 !important;
+    }
+    
+    /* Add padding to hero section for scroll indicator */
+    .luxe-hero {
+        margin-bottom: 80px !important;
+    }
+}
+
+/* FINAL FIX - Hide scroll indicator on mobile completely */
+@media (max-width: 768px) {
+    .luxe-hero .scroll-indicator,
+    section.luxe-hero .scroll-indicator,
+    .scroll-indicator {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
