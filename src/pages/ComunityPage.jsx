@@ -139,7 +139,7 @@ const CommunityPage = () => {
           )}
 
           {!loading && (
-            <div className="luxe-grid luxe-grid--2">
+            <div className="luxe-grid luxe-grid--3">
               {communities.map(community => (
                 <CommunityCard
                   key={community.id}
