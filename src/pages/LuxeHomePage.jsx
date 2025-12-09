@@ -117,6 +117,7 @@ const features = [
 // Luxe Navbar Component
 const LuxeNavbar = () => {
     const [scrolled, setScrolled] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -126,35 +127,65 @@ const LuxeNavbar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // Close mobile menu when route changes or clicking a link
+    const closeMobileMenu = () => setMobileMenuOpen(false);
+
     return (
-        <nav className={`luxe-navbar ${scrolled ? 'scrolled' : ''}`}>
-            <div className="luxe-container luxe-navbar-inner">
-                <Link to="/" className="luxe-navbar-logo">
-                    <img src="/images/luminara_logo.png" alt="Luminara" />
-                    <span className="luxe-navbar-logo-text">LUMINARA</span>
-                </Link>
-
-                <ul className="luxe-navbar-links">
-                    <li><Link to="/directory">Directory</Link></li>
-                    <li><Link to="/itinerary">Itinerary</Link></li>
-                    <li><Link to="/guide">Guide</Link></li>
-                    <li><Link to="/community">Community</Link></li>
-                    <li><Link to="/chatbot">AI Assistant</Link></li>
-                </ul>
-
-                <div className="luxe-navbar-actions">
-                    <Link to="/signin" className="luxe-btn luxe-btn-secondary luxe-navbar-cta">
-                        Sign In
+        <>
+            <nav className={`luxe-navbar ${scrolled ? 'scrolled' : ''}`}>
+                <div className="luxe-container luxe-navbar-inner">
+                    <Link to="/" className="luxe-navbar-logo">
+                        <img src="/images/luminara_logo.png" alt="Luminara" />
+                        <span className="luxe-navbar-logo-text">LUMINARA</span>
                     </Link>
-                </div>
 
-                <button className="luxe-menu-toggle" aria-label="Menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+                    <ul className="luxe-navbar-links">
+                        <li><Link to="/directory">Directory</Link></li>
+                        <li><Link to="/itinerary">Itinerary</Link></li>
+                        <li><Link to="/guide">Guide</Link></li>
+                        <li><Link to="/community">Community</Link></li>
+                        <li><Link to="/chatbot">AI Assistant</Link></li>
+                    </ul>
+
+                    <div className="luxe-navbar-actions">
+                        <Link to="/signin" className="luxe-btn luxe-btn-secondary luxe-navbar-cta">
+                            Sign In
+                        </Link>
+                    </div>
+
+                    <button
+                        className={`luxe-menu-toggle ${mobileMenuOpen ? 'active' : ''}`}
+                        aria-label="Menu"
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    >
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </nav>
+
+            {/* Mobile Menu Overlay */}
+            <div className={`luxe-mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
+                <div className="luxe-mobile-menu__content">
+                    <ul className="luxe-mobile-menu__links">
+                        <li><Link to="/directory" onClick={closeMobileMenu}>Directory</Link></li>
+                        <li><Link to="/itinerary" onClick={closeMobileMenu}>Itinerary</Link></li>
+                        <li><Link to="/guide" onClick={closeMobileMenu}>Guide</Link></li>
+                        <li><Link to="/community" onClick={closeMobileMenu}>Community</Link></li>
+                        <li><Link to="/chatbot" onClick={closeMobileMenu}>AI Assistant</Link></li>
+                    </ul>
+                    <div className="luxe-mobile-menu__actions">
+                        <Link to="/signin" className="luxe-btn luxe-btn--primary luxe-btn--full" onClick={closeMobileMenu}>
+                            Sign In
+                        </Link>
+                        <Link to="/signup" className="luxe-btn luxe-btn--secondary luxe-btn--full" onClick={closeMobileMenu}>
+                            Create Account
+                        </Link>
+                    </div>
+                </div>
             </div>
-        </nav>
+        </>
     );
 };
 

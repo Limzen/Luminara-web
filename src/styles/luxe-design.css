@@ -228,6 +228,21 @@ body {
   background: rgba(212, 168, 85, 0.1);
 }
 
+/* Button SVG Icons */
+.luxe-btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* Mobile Button Adjustments */
+@media (max-width: 640px) {
+  .luxe-btn {
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--text-xs);
+  }
+}
+
 /* ============================================
    ANIMATION UTILITIES
    ============================================ */

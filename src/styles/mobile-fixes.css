@@ -1,0 +1,673 @@
+/* ============================================
+   MOBILE RESPONSIVE FIXES
+   Additional responsive styles for mobile
+   ============================================ */
+
+/* ============================================
+   BUTTON FIXES
+   ============================================ */
+.luxe-btn svg,
+.luxe-btn-primary svg,
+.luxe-btn-secondary svg,
+.luxe-btn-ghost svg {
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0;
+}
+
+/* ============================================
+   HOMEPAGE HERO MOBILE FIXES
+   ============================================ */
+@media (max-width: 768px) {
+    .luxe-hero {
+        padding: 100px 0 50px !important;
+        min-height: auto !important;
+    }
+
+    .luxe-hero-title {
+        font-size: clamp(2rem, 8vw, 3rem) !important;
+    }
+
+    .luxe-hero-subtitle {
+        font-size: 1rem !important;
+        padding: 0 var(--space-2);
+    }
+
+    .luxe-hero-product {
+        max-width: 260px !important;
+        margin: 0 auto;
+    }
+
+    .luxe-hero-float-element {
+        display: none !important;
+    }
+
+    .luxe-hero-actions {
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: var(--space-3) !important;
+        padding: 0 var(--space-4);
+    }
+
+    .luxe-hero-actions .luxe-btn {
+        width: 100% !important;
+        padding: var(--space-4) var(--space-6) !important;
+        justify-content: center !important;
+    }
+
+    .luxe-hero-stats {
+        flex-direction: column !important;
+        gap: var(--space-4) !important;
+        padding: 0 var(--space-4);
+    }
+
+    .luxe-hero-stat {
+        text-align: center;
+    }
+}
+
+/* ============================================
+   PAGE HERO MOBILE FIXES  
+   ============================================ */
+@media (max-width: 768px) {
+    .luxe-page-hero {
+        padding: 100px 0 50px !important;
+        min-height: 280px !important;
+    }
+
+    .luxe-page-hero__title {
+        font-size: clamp(1.75rem, 6vw, 2.5rem) !important;
+    }
+
+    .luxe-page-hero__subtitle {
+        font-size: 0.95rem !important;
+        padding: 0 var(--space-2);
+    }
+
+    .luxe-search {
+        flex-direction: column !important;
+        border-radius: var(--radius-xl) !important;
+        padding: var(--space-3) !important;
+    }
+
+    .luxe-search__input {
+        width: 100% !important;
+    }
+
+    .luxe-search__btn {
+        width: 100% !important;
+    }
+}
+
+/* ============================================
+   PROFILE STATS MOBILE FIXES
+   ============================================ */
+@media (max-width: 640px) {
+    .luxe-profile-stats {
+        grid-template-columns: 1fr !important;
+        gap: var(--space-3) !important;
+    }
+
+    .luxe-profile-stat {
+        padding: var(--space-4) !important;
+    }
+
+    .luxe-profile-stat__value {
+        font-size: var(--text-xl) !important;
+    }
+}
+
+/* ============================================
+   SECTION HEADERS MOBILE FIXES
+   ============================================ */
+@media (max-width: 768px) {
+    .luxe-section-title {
+        font-size: clamp(1.5rem, 5vw, 2rem) !important;
+    }
+
+    .luxe-section-desc {
+        font-size: 0.95rem !important;
+    }
+
+    .luxe-showcase-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: var(--space-4) !important;
+    }
+}
+
+/* ============================================
+   CTA SECTION MOBILE FIXES
+   ============================================ */
+@media (max-width: 768px) {
+    .luxe-cta {
+        padding: var(--space-16) 0 !important;
+    }
+
+    .luxe-cta-title {
+        font-size: clamp(1.5rem, 6vw, 2.25rem) !important;
+    }
+
+    .luxe-cta-desc {
+        font-size: 0.95rem !important;
+        padding: 0 var(--space-2);
+    }
+
+    .luxe-cta-actions {
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: var(--space-3) !important;
+        padding: 0 var(--space-4);
+    }
+
+    .luxe-cta-actions .luxe-btn {
+        width: 100% !important;
+    }
+}
+
+/* ============================================
+   FEATURES SECTION MOBILE FIXES
+   ============================================ */
+@media (max-width: 768px) {
+    .luxe-features {
+        padding: var(--space-16) 0 !important;
+    }
+
+    .luxe-feature-card {
+        padding: var(--space-6) !important;
+    }
+
+    .luxe-feature-title {
+        font-size: var(--text-lg) !important;
+    }
+}
+
+/* ============================================
+   FOOTER MOBILE FIXES
+   ============================================ */
+@media (max-width: 768px) {
+
+    .luxe-footer-grid,
+    .luxe-footer__grid {
+        grid-template-columns: 1fr !important;
+        gap: var(--space-8) !important;
+    }
+
+    .luxe-footer-brand,
+    .luxe-footer__brand {
+        max-width: 100% !important;
+    }
+
+    .luxe-footer-bottom,
+    .luxe-footer__bottom {
+        flex-direction: column !important;
+        gap: var(--space-4) !important;
+        text-align: center !important;
+    }
+
+    .luxe-footer-links,
+    .luxe-footer__links {
+        justify-content: center !important;
+    }
+}
+
+/* ============================================
+   DETAIL PAGE MOBILE FIXES
+   ============================================ */
+@media (max-width: 768px) {
+    .luxe-detail-card {
+        padding: var(--space-5) !important;
+    }
+
+    .luxe-detail-title {
+        font-size: var(--text-xl) !important;
+    }
+
+    .luxe-detail-header {
+        flex-direction: column !important;
+        gap: var(--space-4) !important;
+    }
+
+    .luxe-detail-actions {
+        width: 100% !important;
+        flex-wrap: wrap !important;
+    }
+
+    .luxe-detail-actions .luxe-btn {
+        flex: 1 1 auto !important;
+        min-width: 120px !important;
+    }
+}
+
+/* ============================================
+   TABS MOBILE FIXES
+   ============================================ */
+@media (max-width: 768px) {
+    .luxe-tabs {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .luxe-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .luxe-tab {
+        padding: var(--space-2) var(--space-4) !important;
+        font-size: var(--text-xs) !important;
+    }
+}
+
+/* ============================================
+   GRID MOBILE FIXES
+   ============================================ */
+@media (max-width: 640px) {
+
+    .luxe-grid--2,
+    .luxe-grid--3,
+    .luxe-grid--4 {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ============================================
+   MAP SECTION MOBILE FIXES
+   ============================================ */
+@media (max-width: 768px) {
+    .luxe-map-container>div {
+        height: 350px !important;
+    }
+}
+
+/* ============================================
+   CHAT PAGE MOBILE FIXES
+   ============================================ */
+@media (max-width: 768px) {
+    .luxe-chat__message {
+        max-width: 90% !important;
+    }
+
+    .luxe-chat__input-wrapper {
+        flex-direction: row !important;
+    }
+
+    .luxe-chat__send {
+        width: 44px !important;
+        height: 44px !important;
+        flex-shrink: 0;
+    }
+}
+
+/* ============================================
+   NAVBAR/MENU MOBILE FIXES
+   ============================================ */
+@media (max-width: 1024px) {
+
+    .luxe-navbar-links,
+    .luxe-nav__links {
+        display: none !important;
+    }
+
+    .luxe-navbar-actions,
+    .luxe-nav__actions {
+        display: none !important;
+    }
+
+    .luxe-menu-toggle,
+    .luxe-nav__toggle {
+        display: flex !important;
+    }
+}
+
+/* ============================================
+   HAMBURGER MENU TOGGLE - HOMEPAGE VERSION
+   ============================================ */
+.luxe-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 1002;
+}
+
+.luxe-menu-toggle span {
+    width: 24px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    transition: all 0.25s ease;
+}
+
+.luxe-menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.luxe-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.luxe-menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Ensure hamburger toggle is always clickable */
+.luxe-nav__toggle,
+.luxe-menu-toggle {
+    position: relative;
+    z-index: 1002 !important;
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ============================================
+   MOBILE MENU OVERLAY - FULL IMPLEMENTATION
+   ============================================ */
+.luxe-mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(10, 15, 28, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.4s ease;
+}
+
+.luxe-mobile-menu.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.luxe-mobile-menu__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 4rem 2rem;
+    transform: translateY(20px);
+    transition: transform 0.4s ease;
+}
+
+.luxe-mobile-menu.open .luxe-mobile-menu__content {
+    transform: translateY(0);
+}
+
+.luxe-mobile-menu__links {
+    list-style: none;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 2.5rem;
+}
+
+.luxe-mobile-menu__links li {
+    margin-bottom: 1.5rem;
+}
+
+.luxe-mobile-menu__links a {
+    font-family: var(--font-display, 'Outfit', sans-serif);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: color 0.25s ease;
+}
+
+.luxe-mobile-menu__links a:hover,
+.luxe-mobile-menu__links a.active {
+    color: #fcd34d;
+}
+
+.luxe-mobile-menu__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 280px;
+}
+
+/* ============================================
+   BUTTON STYLES FOR MOBILE MENU
+   ============================================ */
+.luxe-btn--primary {
+    background: linear-gradient(135deg, #fcd34d, #d4a855);
+    color: #0a0f1c;
+    box-shadow: 0 4px 20px rgba(212, 168, 85, 0.3);
+}
+
+.luxe-btn--secondary {
+    background: transparent;
+    color: #fff;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+}
+
+.luxe-btn--full {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem 2rem;
+    border-radius: 9999px;
+    font-family: var(--font-display, 'Outfit', sans-serif);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.luxe-btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(212, 168, 85, 0.4);
+}
+
+.luxe-btn--secondary:hover {
+    border-color: #fcd34d;
+    color: #fcd34d;
+    background: rgba(212, 168, 85, 0.1);
+}
+/* ============================================
+   PROFILE PAGE MOBILE FIXES
+   ============================================ */
+@media (max-width: 768px) {
+    /* Profile Header */
+    .luxe-profile-header {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: var(--space-4) !important;
+    }
+
+    .luxe-profile-avatar {
+        margin: 0 auto !important;
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    .luxe-profile-name {
+        font-size: var(--text-xl) !important;
+    }
+
+    .luxe-profile-email {
+        font-size: var(--text-sm) !important;
+    }
+
+    /* Profile Stats */
+    .luxe-profile-stats {
+        grid-template-columns: 1fr !important;
+        gap: var(--space-3) !important;
+    }
+
+    .luxe-profile-stat {
+        padding: var(--space-4) !important;
+    }
+
+    .luxe-profile-stat__value {
+        font-size: var(--text-xl) !important;
+    }
+
+    .luxe-profile-stat__label {
+        font-size: var(--text-xs) !important;
+    }
+
+    /* Tabs */
+    .luxe-tabs {
+        display: flex !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: var(--space-2) !important;
+        padding-bottom: var(--space-2);
+    }
+
+    .luxe-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .luxe-tab {
+        padding: var(--space-2) var(--space-3) !important;
+        font-size: var(--text-xs) !important;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    /* Tab Content */
+    .luxe-tab-content {
+        padding-top: var(--space-4) !important;
+    }
+
+    /* Glass Cards */
+    .luxe-glass {
+        padding: var(--space-4) !important;
+    }
+
+    /* Quick Actions Grid */
+    .luxe-tab-content .luxe-grid--2 {
+        grid-template-columns: 1fr !important;
+        gap: var(--space-4) !important;
+    }
+
+    /* Settings Form */
+    .luxe-tab-content .luxe-input {
+        margin-bottom: var(--space-4) !important;
+    }
+
+    /* Empty States */
+    .luxe-empty {
+        padding: var(--space-8) var(--space-4) !important;
+    }
+
+    .luxe-empty__icon {
+        width: 60px !important;
+        height: 60px !important;
+    }
+
+    .luxe-empty__icon svg {
+        width: 30px !important;
+        height: 30px !important;
+    }
+
+    .luxe-empty__title {
+        font-size: var(--text-lg) !important;
+    }
+
+    .luxe-empty__desc {
+        font-size: var(--text-sm) !important;
+    }
+
+    /* Edit Profile Button - show on mobile */
+    .luxe-hide-mobile {
+        display: block !important;
+        margin-top: var(--space-4);
+    }
+
+    .luxe-hide-mobile .luxe-btn {
+        width: 100% !important;
+    }
+}
+
+/* ============================================
+   BUTTON ICON TEXT ALIGNMENT FIX
+   ============================================ */
+.luxe-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    flex-direction: row !important;
+}
+
+.luxe-btn svg {
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0 !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+}
+
+.luxe-btn__text {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+.luxe-btn__text svg {
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0 !important;
+}
+
+.luxe-btn__icon {
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+/* Ghost button specific fix */
+.luxe-btn--ghost,
+.luxe-btn-ghost {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+/* ============================================
+   PROFILE STATS VALUE/LABEL ALIGNMENT FIX
+   ============================================ */
+.luxe-profile-stat {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.25rem !important;
+    text-align: center !important;
+}
+
+.luxe-profile-stat__value {
+    display: block !important;
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    color: #fcd34d !important;
+    line-height: 1 !important;
+}
+
+.luxe-profile-stat__label {
+    display: block !important;
+    font-size: 0.875rem !important;
+    color: #94a3b8 !important;
+    margin-top: 0.25rem !important;
+}
+
+@media (max-width: 768px) {
+    .luxe-profile-stat__value {
+        font-size: 1.5rem !important;
+    }
+    
+    .luxe-profile-stat__label {
+        font-size: 0.75rem !important;
+    }
+}
