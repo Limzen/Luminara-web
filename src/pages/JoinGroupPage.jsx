@@ -62,18 +62,7 @@ const JoinGroupPage = () => {
       <section className="luxe-section" style={{ paddingTop: '140px' }}>
         <div className="luxe-container" style={{ maxWidth: '600px' }}>
           {/* Back Link */}
-          <Link
-            to="/community"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 'var(--space-2)',
-              color: 'var(--gray-400)',
-              marginBottom: 'var(--space-6)',
-              textDecoration: 'none',
-              fontSize: 'var(--text-sm)'
-            }}
-          >
+          <Link to="/community" className="luxe-back-link">
             <Icons.ArrowLeft /> Back to Communities
           </Link>
 

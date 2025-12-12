@@ -221,13 +221,29 @@ body {
 }
 
 .luxe-btn-ghost {
-  background: transparent;
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.7));
+  border: 1px solid rgba(212, 168, 85, 0.3);
   color: var(--gold-400);
-  padding: var(--space-2) var(--space-4);
+  padding: var(--space-3) var(--space-6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 15px rgba(10, 15, 28, 0.3);
 }
 
 .luxe-btn-ghost:hover {
-  background: rgba(212, 168, 85, 0.1);
+  background: linear-gradient(145deg, rgba(212, 168, 85, 0.15), rgba(212, 168, 85, 0.08));
+  border-color: var(--gold-400);
+  box-shadow: 0 8px 25px rgba(212, 168, 85, 0.2),
+    0 4px 15px rgba(10, 15, 28, 0.3);
+  transform: translateX(4px);
+}
+
+.luxe-btn-ghost svg {
+  transition: transform var(--duration-base) var(--ease-smooth);
+}
+
+.luxe-btn-ghost:hover svg {
+  transform: translateX(4px);
 }
 
 /* Button SVG Icons */
@@ -577,4 +593,25 @@ body {
   .show-desktop {
     display: block !important;
   }
+<<<<<<< HEAD
+=======
+}
+
+/* Mobile Button Sizes */
+@media (max-width: 768px) {
+  .luxe-btn {
+    padding: 0.6rem 1.25rem !important;
+    font-size: 0.7rem !important;
+  }
+
+  .luxe-btn-primary,
+  .luxe-btn-secondary {
+    padding: 0.6rem 1rem !important;
+  }
+
+  .luxe-btn svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+>>>>>>> df9eaf4 (feat: improve mobile responsiveness and card styling across all pages)
 }

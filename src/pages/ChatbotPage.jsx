@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { LuxeNavbar } from '../components/luxe/LuxeComponents';
+import { sendMessageToAI } from '../services/aiService';
 import '../styles/luxe-pages.css';
 
 // Icons
@@ -75,24 +76,30 @@ const ChatbotPage = () => {
         setInput('');
         setIsTyping(true);
 
-        // Simulate bot response (replace with actual API call)
-        setTimeout(() => {
-            const botResponses = [
-                "Terima kasih atas pertanyaannya! Saya menemukan beberapa destinasi wisata religi yang menarik di Medan untuk Anda.",
-                "Berdasarkan pencarian, berikut rekomendasi saya untuk wisata religi di Medan:\n\n1. **Masjid Raya Al Mashun** - Masjid bersejarah dengan arsitektur megah\n2. **Vihara Maitreya** - Vihara Buddha terbesar di Sumatera\n3. **Gereja HKBP** - Gereja bersejarah dengan arsitektur kolonial\n\nApakah Anda ingin informasi lebih detail tentang salah satunya?",
-                "Untuk itinerary 1 hari wisata religi di Medan, saya sarankan:\n\n**Pagi (08:00)** - Mulai dari Masjid Raya Al Mashun\n**Siang (11:00)** - Kunjungi Vihara Maitreya\n**Sore (14:00)** - Lanjut ke Gereja HKBP\n**Petang (16:00)** - Menikmati sunset di area Merdeka Walk\n\nMau saya buatkan detail routenya?"
-            ];
+        try {
+            // Call Groq AI API
+            const aiResponse = await sendMessageToAI(text.trim());
 
             const botMessage = {
                 id: Date.now(),
                 type: 'bot',
-                text: botResponses[Math.floor(Math.random() * botResponses.length)],
+                text: aiResponse,
                 timestamp: new Date()
             };
 
             setMessages(prev => [...prev, botMessage]);
+        } catch (error) {
+            console.error('Error sending message:', error);
+            const errorMessage = {
+                id: Date.now(),
+                type: 'bot',
+                text: '😔 Maaf, terjadi kesalahan. Silakan coba lagi.',
+                timestamp: new Date()
+            };
+            setMessages(prev => [...prev, errorMessage]);
+        } finally {
             setIsTyping(false);
-        }, 1500);
+        }
     };
 
     // Handle key press
@@ -137,21 +144,32 @@ const ChatbotPage = () => {
                         {messages.map((message) => (
                             <div
                                 key={message.id}
-                                className={`luxe-chat__message luxe-chat__message--${message.type}`}
+                                className={`luxe-chat__message-wrapper luxe-chat__message-wrapper--${message.type}`}
                             >
-                                <p className="luxe-chat__message-text" style={{ whiteSpace: 'pre-line' }}>
-                                    {message.text}
-                                </p>
+                                {/* Avatar */}
+                                <div className={`luxe-chat__avatar luxe-chat__avatar--${message.type}`}>
+                                    {message.type === 'bot' ? '✨' : '👤'}
+                                </div>
+
+                                {/* Message Bubble */}
+                                <div className={`luxe-chat__message luxe-chat__message--${message.type}`}>
+                                    <p className="luxe-chat__message-text" style={{ whiteSpace: 'pre-line' }}>
+                                        {message.text}
+                                    </p>
+                                </div>
                             </div>
                         ))}
 
                         {/* Typing Indicator */}
                         {isTyping && (
-                            <div className="luxe-chat__message luxe-chat__message--bot">
-                                <div style={{ display: 'flex', gap: '4px' }}>
-                                    <span className="luxe-spinner" style={{ width: '8px', height: '8px' }}></span>
-                                    <span className="luxe-spinner" style={{ width: '8px', height: '8px', animationDelay: '0.2s' }}></span>
-                                    <span className="luxe-spinner" style={{ width: '8px', height: '8px', animationDelay: '0.4s' }}></span>
+                            <div className="luxe-chat__message-wrapper luxe-chat__message-wrapper--bot">
+                                <div className="luxe-chat__avatar luxe-chat__avatar--bot">✨</div>
+                                <div className="luxe-chat__message luxe-chat__message--bot">
+                                    <div style={{ display: 'flex', gap: '6px', padding: '4px 0' }}>
+                                        <span className="luxe-spinner" style={{ width: '8px', height: '8px' }}></span>
+                                        <span className="luxe-spinner" style={{ width: '8px', height: '8px', animationDelay: '0.2s' }}></span>
+                                        <span className="luxe-spinner" style={{ width: '8px', height: '8px', animationDelay: '0.4s' }}></span>
+                                    </div>
                                 </div>
                             </div>
                         )}

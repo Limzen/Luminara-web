@@ -201,18 +201,7 @@ const DirectoryDetailPage = () => {
       <section className="luxe-detail-content">
         <div className="luxe-container">
           {/* Back Button */}
-          <Link
-            to="/directory"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 'var(--space-2)',
-              color: 'var(--gray-400)',
-              marginBottom: 'var(--space-6)',
-              textDecoration: 'none',
-              fontSize: 'var(--text-sm)'
-            }}
-          >
+          <Link to="/directory" className="luxe-back-link">
             <Icons.ArrowLeft /> Back to Directory
           </Link>
 

@@ -163,18 +163,7 @@ const CommunityNamePage = () => {
       <section className="luxe-section" style={{ paddingTop: 0, marginTop: '-60px' }}>
         <div className="luxe-container" style={{ maxWidth: '900px' }}>
           {/* Back Link */}
-          <Link
-            to="/community"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 'var(--space-2)',
-              color: 'var(--gray-400)',
-              marginBottom: 'var(--space-6)',
-              textDecoration: 'none',
-              fontSize: 'var(--text-sm)'
-            }}
-          >
+          <Link to="/community" className="luxe-back-link">
             <Icons.ArrowLeft /> Back to Communities
           </Link>
 

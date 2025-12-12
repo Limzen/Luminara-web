@@ -189,19 +189,52 @@
     color: var(--navy-900);
 }
 
+/* Glass Card Base */
+.luxe-glass {
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.85));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all var(--duration-base) var(--ease-smooth);
+}
+
+.luxe-glass:hover {
+    border-color: rgba(212, 168, 85, 0.2);
+    box-shadow: 0 10px 30px -10px rgba(10, 15, 28, 0.5);
+}
+
 /* Directory Card */
 .luxe-dir-card {
+    position: relative;
     background: linear-gradient(145deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.8));
     border-radius: var(--radius-2xl);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     overflow: hidden;
     transition: all var(--duration-slow) var(--ease-smooth);
 }
 
+.luxe-dir-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold-400), transparent);
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-smooth);
+}
+
 .luxe-dir-card:hover {
     transform: translateY(-8px);
-    border-color: rgba(212, 168, 85, 0.3);
-    box-shadow: 0 20px 60px -15px rgba(10, 15, 28, 0.5);
+    border-color: rgba(212, 168, 85, 0.25);
+    box-shadow: 0 25px 50px -12px rgba(10, 15, 28, 0.7),
+        0 0 40px -15px rgba(212, 168, 85, 0.15);
+}
+
+.luxe-dir-card:hover::after {
+    opacity: 1;
 }
 
 .luxe-dir-card__img {
@@ -367,6 +400,55 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(0deg, var(--navy-900) 0%, transparent 50%);
+}
+
+/* Back Link Button */
+.luxe-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    color: var(--gray-300);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    margin-bottom: var(--space-6);
+    transition: all var(--duration-base) var(--ease-smooth);
+}
+
+.luxe-back-link:hover {
+    background: rgba(212, 168, 85, 0.15);
+    border-color: var(--gold-400);
+    color: var(--gold-400);
+    transform: translateX(-4px);
+}
+
+.luxe-back-link svg {
+    width: 16px;
+    height: 16px;
+    transition: transform var(--duration-base) var(--ease-smooth);
+}
+
+.luxe-back-link:hover svg {
+    transform: translateX(-2px);
+}
+
+@media (max-width: 768px) {
+    .luxe-back-link {
+        padding: var(--space-2) var(--space-3);
+        font-size: 0.75rem;
+        gap: var(--space-1);
+        margin-bottom: var(--space-4);
+    }
+
+    .luxe-back-link svg {
+        width: 14px;
+        height: 14px;
+    }
 }
 
 .luxe-detail-content {
@@ -658,13 +740,14 @@
     flex-direction: column;
     height: calc(100vh - 80px);
     padding-top: 80px;
+    background: linear-gradient(180deg, var(--navy-900) 0%, rgba(15, 23, 42, 0.95) 100%);
 }
 
 .luxe-chat__header {
     padding: var(--space-4) var(--space-6);
-    background: rgba(15, 23, 42, 0.9);
+    background: rgba(15, 23, 42, 0.95);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .luxe-chat__title {
@@ -677,37 +760,83 @@
 .luxe-chat__messages {
     flex: 1;
     overflow-y: auto;
-    padding: var(--space-6);
+    padding: var(--space-8) var(--space-6);
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-8);
 }
 
+/* Message wrapper - includes avatar */
+.luxe-chat__message-wrapper {
+    display: flex;
+    gap: var(--space-3);
+    animation: fadeInUp 0.4s var(--ease-smooth);
+}
+
+.luxe-chat__message-wrapper--user {
+    flex-direction: row-reverse;
+}
+
+/* Avatar */
+.luxe-chat__avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+}
+
+.luxe-chat__avatar--bot {
+    background: linear-gradient(135deg, var(--gold-400), var(--gold-500));
+    color: var(--navy-900);
+}
+
+.luxe-chat__avatar--user {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--gray-300);
+}
+
+/* Message bubble */
 .luxe-chat__message {
-    max-width: 80%;
+    max-width: 70%;
     padding: var(--space-4) var(--space-5);
     border-radius: var(--radius-2xl);
-    animation: fadeInUp 0.3s var(--ease-smooth);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    position: relative;
 }
 
 .luxe-chat__message--user {
-    align-self: flex-end;
     background: linear-gradient(135deg, var(--gold-400), var(--gold-500));
     color: var(--navy-900);
-    border-bottom-right-radius: var(--radius-sm);
+    border-bottom-right-radius: 6px;
+    box-shadow: 0 4px 15px rgba(212, 168, 85, 0.25);
 }
 
 .luxe-chat__message--bot {
-    align-self: flex-start;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(30, 41, 59, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--gray-100);
-    border-bottom-left-radius: var(--radius-sm);
+    border-bottom-left-radius: 6px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .luxe-chat__message-text {
     font-size: var(--text-base);
-    line-height: 1.6;
+    line-height: 1.75;
+    letter-spacing: 0.01em;
+}
+
+/* Timestamp */
+.luxe-chat__timestamp {
+    font-size: 11px;
+    opacity: 0.6;
+    margin-top: var(--space-1);
 }
 
 .luxe-chat__input-container {
@@ -767,6 +896,85 @@
     height: 20px;
 }
 
+/* Rate Limit Notice */
+.luxe-chat__rate-limit {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-4);
+    font-size: var(--text-sm);
+    color: #fca5a5;
+}
+
+.luxe-chat__rate-limit-icon {
+    font-size: 18px;
+}
+
+.luxe-chat__rate-limit-countdown {
+    font-weight: 600;
+    color: var(--gold-400);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .luxe-chat {
+        padding-top: 70px;
+        height: calc(100vh - 70px);
+    }
+
+    .luxe-chat__header {
+        padding: var(--space-3) var(--space-4);
+    }
+
+    .luxe-chat__messages {
+        padding: var(--space-4);
+        gap: var(--space-5);
+    }
+
+    .luxe-chat__message-wrapper {
+        gap: var(--space-2);
+    }
+
+    .luxe-chat__avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+
+    .luxe-chat__message {
+        max-width: 85%;
+        padding: var(--space-3) var(--space-4);
+    }
+
+    .luxe-chat__message-text {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .luxe-chat__input-container {
+        padding: var(--space-3) var(--space-4);
+    }
+
+    .luxe-chat__input {
+        padding: var(--space-2) var(--space-4);
+        font-size: 14px;
+    }
+
+    .luxe-chat__send {
+        width: 42px;
+        height: 42px;
+    }
+
+    .luxe-chat__send svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+
 /* ============================================
    PROFILE PAGE
    ============================================ */
@@ -822,24 +1030,62 @@
 }
 
 .luxe-profile-stat {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    padding: var(--space-5);
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: var(--radius-xl);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: var(--space-6);
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.8));
+    border-radius: var(--radius-2xl);
+    border: 1px solid rgba(212, 168, 85, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all var(--duration-base) var(--ease-smooth);
+    overflow: hidden;
+}
+
+.luxe-profile-stat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold-400), transparent);
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-smooth);
+}
+
+.luxe-profile-stat:hover {
+    transform: translateY(-4px);
+    border-color: rgba(212, 168, 85, 0.4);
+    box-shadow: 0 20px 40px -10px rgba(10, 15, 28, 0.6),
+        0 0 30px -5px rgba(212, 168, 85, 0.2);
+}
+
+.luxe-profile-stat:hover::before {
+    opacity: 1;
 }
 
 .luxe-profile-stat__value {
     font-family: var(--font-display);
-    font-size: var(--text-2xl);
+    font-size: var(--text-3xl);
     font-weight: 700;
-    color: var(--gold-400);
+    background: linear-gradient(135deg, var(--gold-300), var(--gold-500));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--space-1);
 }
 
 .luxe-profile-stat__label {
     font-size: var(--text-sm);
-    color: var(--gray-500);
-    margin-top: var(--space-1);
+    color: var(--gray-400);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 /* ============================================
@@ -913,5 +1159,230 @@
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* ============================================
+   COMPREHENSIVE MOBILE RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+
+    /* Page Hero */
+    .luxe-page-hero {
+        padding: 100px 0 40px !important;
+        min-height: 280px !important;
+    }
+
+    .luxe-page-hero__title {
+        font-size: 1.75rem !important;
+        line-height: 1.2;
+    }
+
+    .luxe-page-hero__subtitle {
+        font-size: 0.9rem !important;
+        line-height: 1.6;
+    }
+
+    /* Section spacing */
+    .luxe-section {
+        padding: var(--space-8) 0 !important;
+    }
+
+    /* Sections with inline paddingTop (detail pages with back button) */
+    .luxe-section[style*="padding-top"],
+    .luxe-section[style*="paddingTop"] {
+        padding-top: 100px !important;
+    }
+
+    /* Back link position for mobile */
+    .luxe-back-link {
+        position: relative;
+        z-index: 10;
+        margin-top: var(--space-2);
+    }
+
+    .luxe-section-label {
+        font-size: 0.65rem !important;
+    }
+
+    .luxe-section-title {
+        font-size: 1.5rem !important;
+    }
+
+    /* Grids - force 1 column on mobile */
+    .luxe-grid--2,
+    .luxe-grid--3,
+    .luxe-grid--4 {
+        grid-template-columns: 1fr !important;
+        gap: var(--space-4) !important;
+    }
+
+    /* Directory/Guide Cards */
+    .luxe-dir-card {
+        margin-bottom: var(--space-3);
+    }
+
+    .luxe-dir-card__img {
+        aspect-ratio: 16/9 !important;
+    }
+
+    .luxe-dir-card__body {
+        padding: var(--space-4) !important;
+    }
+
+    .luxe-dir-card__title {
+        font-size: 1rem !important;
+    }
+
+    .luxe-dir-card__desc {
+        font-size: 0.85rem !important;
+        -webkit-line-clamp: 2 !important;
+        line-clamp: 2 !important;
+    }
+
+    .luxe-dir-card__footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-2);
+    }
+
+    /* Profile Stats - horizontal layout */
+    .luxe-profile-stats {
+        gap: var(--space-3) !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    .luxe-profile-stat {
+        padding: var(--space-4) var(--space-3) !important;
+    }
+
+    .luxe-profile-stat__value {
+        font-size: 1.5rem !important;
+    }
+
+    .luxe-profile-stat__label {
+        font-size: 0.6rem !important;
+        letter-spacing: 0.03em !important;
+    }
+
+    /* Profile page */
+    .luxe-profile-avatar {
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    .luxe-profile-name {
+        font-size: 1.25rem !important;
+    }
+
+    /* Auth pages */
+    .luxe-auth {
+        flex-direction: column !important;
+    }
+
+    .luxe-auth__visual {
+        display: none !important;
+    }
+
+    .luxe-auth__form-container {
+        padding: var(--space-6) !important;
+    }
+
+    .luxe-auth__form {
+        max-width: 100% !important;
+    }
+
+    .luxe-auth__logo img {
+        height: 36px !important;
+    }
+
+    .luxe-auth__title {
+        font-size: 1.5rem !important;
+    }
+
+    /* Form elements */
+    .luxe-input {
+        padding: var(--space-3) var(--space-4) !important;
+        font-size: 0.9rem !important;
+    }
+
+    .luxe-input-icon {
+        left: var(--space-3) !important;
+    }
+
+    .luxe-input--with-icon {
+        padding-left: var(--space-10) !important;
+    }
+
+    /* Tabs */
+    .luxe-tabs {
+        gap: var(--space-2) !important;
+        flex-wrap: wrap;
+    }
+
+    .luxe-tab {
+        padding: var(--space-2) var(--space-4) !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* Empty state */
+    .luxe-empty__title {
+        font-size: 1.1rem !important;
+    }
+
+    .luxe-empty__desc {
+        font-size: 0.9rem !important;
+    }
+
+    /* Containers */
+    .luxe-container {
+        padding-left: var(--space-4) !important;
+        padding-right: var(--space-4) !important;
+    }
+
+    /* Filters */
+    .luxe-directory-filters {
+        gap: var(--space-2) !important;
+    }
+
+    .luxe-filter-btn {
+        padding: var(--space-2) var(--space-3) !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* Search bar */
+    .luxe-search {
+        flex-direction: column !important;
+        gap: var(--space-2) !important;
+        border-radius: var(--radius-xl) !important;
+        padding: var(--space-3) !important;
+        max-width: 100% !important;
+    }
+
+    .luxe-search__input {
+        padding: var(--space-2) var(--space-3) !important;
+        font-size: 0.9rem !important;
+    }
+
+    .luxe-search__btn {
+        width: 100% !important;
+        padding: var(--space-2) var(--space-4) !important;
+        font-size: 0.75rem !important;
+        border-radius: var(--radius-lg) !important;
+    }
+
+    /* Detail pages */
+    .luxe-detail-hero {
+        padding: 100px 0 40px !important;
+    }
+
+    .luxe-detail-hero__title {
+        font-size: 1.5rem !important;
+    }
+
+    /* Glass cards */
+    .luxe-glass,
+    .glass {
+        padding: var(--space-4) !important;
     }
 }

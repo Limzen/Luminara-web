@@ -111,18 +111,7 @@ const GuideDetailPage = () => {
       <section className="luxe-section" style={{ paddingTop: '140px' }}>
         <div className="luxe-container" style={{ maxWidth: '900px' }}>
           {/* Back Link */}
-          <Link
-            to="/guide"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 'var(--space-2)',
-              color: 'var(--gray-400)',
-              marginBottom: 'var(--space-6)',
-              textDecoration: 'none',
-              fontSize: 'var(--text-sm)'
-            }}
-          >
+          <Link to="/guide" className="luxe-back-link">
             <Icons.ArrowLeft /> Back to Guides
           </Link>
 

@@ -127,8 +127,15 @@ const LuxeNavbar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+<<<<<<< HEAD
     // Close mobile menu when route changes or clicking a link
     const closeMobileMenu = () => setMobileMenuOpen(false);
+=======
+    // Close mobile menu when clicking a link
+    const handleLinkClick = () => {
+        setMobileMenuOpen(false);
+    };
+>>>>>>> df9eaf4 (feat: improve mobile responsiveness and card styling across all pages)
 
     return (
         <>
@@ -165,6 +172,7 @@ const LuxeNavbar = () => {
                 </div>
             </nav>
 
+<<<<<<< HEAD
             {/* Mobile Menu Overlay */}
             <div className={`luxe-mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
                 <div className="luxe-mobile-menu__content">
@@ -180,6 +188,23 @@ const LuxeNavbar = () => {
                             Sign In
                         </Link>
                         <Link to="/signup" className="luxe-btn luxe-btn--secondary luxe-btn--full" onClick={closeMobileMenu}>
+=======
+            {/* Mobile Menu */}
+            <div className={`luxe-mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
+                <div className="luxe-mobile-menu-content">
+                    <ul className="luxe-mobile-menu-links">
+                        <li><Link to="/directory" onClick={handleLinkClick}>Directory</Link></li>
+                        <li><Link to="/itinerary" onClick={handleLinkClick}>Itinerary</Link></li>
+                        <li><Link to="/guide" onClick={handleLinkClick}>Guide</Link></li>
+                        <li><Link to="/community" onClick={handleLinkClick}>Community</Link></li>
+                        <li><Link to="/chatbot" onClick={handleLinkClick}>AI Assistant</Link></li>
+                    </ul>
+                    <div className="luxe-mobile-menu-actions">
+                        <Link to="/signin" className="luxe-btn luxe-btn-primary" onClick={handleLinkClick}>
+                            Sign In
+                        </Link>
+                        <Link to="/signup" className="luxe-btn luxe-btn-secondary" onClick={handleLinkClick}>
+>>>>>>> df9eaf4 (feat: improve mobile responsiveness and card styling across all pages)
                             Create Account
                         </Link>
                     </div>
@@ -188,6 +213,7 @@ const LuxeNavbar = () => {
         </>
     );
 };
+
 
 // Hero Section
 const HeroSection = () => (
