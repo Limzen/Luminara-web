@@ -593,12 +593,8 @@ body {
   .show-desktop {
     display: block !important;
   }
-<<<<<<< HEAD
-=======
-}
 
-/* Mobile Button Sizes */
-@media (max-width: 768px) {
+  /* Mobile Button Sizes */
   .luxe-btn {
     padding: 0.6rem 1.25rem !important;
     font-size: 0.7rem !important;
@@ -613,5 +609,4 @@ body {
     width: 14px !important;
     height: 14px !important;
   }
->>>>>>> df9eaf4 (feat: improve mobile responsiveness and card styling across all pages)
 }

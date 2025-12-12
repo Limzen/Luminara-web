@@ -127,15 +127,10 @@ const LuxeNavbar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-<<<<<<< HEAD
-    // Close mobile menu when route changes or clicking a link
-    const closeMobileMenu = () => setMobileMenuOpen(false);
-=======
     // Close mobile menu when clicking a link
     const handleLinkClick = () => {
         setMobileMenuOpen(false);
     };
->>>>>>> df9eaf4 (feat: improve mobile responsiveness and card styling across all pages)
 
     return (
         <>
@@ -172,23 +167,6 @@ const LuxeNavbar = () => {
                 </div>
             </nav>
 
-<<<<<<< HEAD
-            {/* Mobile Menu Overlay */}
-            <div className={`luxe-mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
-                <div className="luxe-mobile-menu__content">
-                    <ul className="luxe-mobile-menu__links">
-                        <li><Link to="/directory" onClick={closeMobileMenu}>Directory</Link></li>
-                        <li><Link to="/itinerary" onClick={closeMobileMenu}>Itinerary</Link></li>
-                        <li><Link to="/guide" onClick={closeMobileMenu}>Guide</Link></li>
-                        <li><Link to="/community" onClick={closeMobileMenu}>Community</Link></li>
-                        <li><Link to="/chatbot" onClick={closeMobileMenu}>AI Assistant</Link></li>
-                    </ul>
-                    <div className="luxe-mobile-menu__actions">
-                        <Link to="/signin" className="luxe-btn luxe-btn--primary luxe-btn--full" onClick={closeMobileMenu}>
-                            Sign In
-                        </Link>
-                        <Link to="/signup" className="luxe-btn luxe-btn--secondary luxe-btn--full" onClick={closeMobileMenu}>
-=======
             {/* Mobile Menu */}
             <div className={`luxe-mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
                 <div className="luxe-mobile-menu-content">
@@ -204,7 +182,6 @@ const LuxeNavbar = () => {
                             Sign In
                         </Link>
                         <Link to="/signup" className="luxe-btn luxe-btn-secondary" onClick={handleLinkClick}>
->>>>>>> df9eaf4 (feat: improve mobile responsiveness and card styling across all pages)
                             Create Account
                         </Link>
                     </div>
